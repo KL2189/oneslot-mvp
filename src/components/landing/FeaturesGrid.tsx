@@ -58,7 +58,7 @@ export const FeaturesGrid = () => {
           {features.map((feature, index) => (
             <div
               key={feature.title}
-              className="feature-card animate-fade-in-up"
+              className="feature-card group animate-fade-in-up"
               style={{ animationDelay: `${index * 0.1}s` }}
             >
               <div className={`w-12 h-12 ${feature.gradient} rounded-xl flex items-center justify-center mb-6 shadow-lg group-hover:scale-110 transition-transform duration-300`}>

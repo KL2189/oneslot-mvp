@@ -168,7 +168,7 @@
   
   .feature-card {
     @apply glass-card p-8 rounded-2xl transition-all duration-500 hover:scale-105 hover:shadow-2xl
-           hover:shadow-purple-500/25 group cursor-pointer;
+           hover:shadow-purple-500/25 cursor-pointer;
   }
   
   .floating-card {
