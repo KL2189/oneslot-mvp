@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -32,23 +33,36 @@
     --input: 214.3 31.8% 91.4%;
     --ring: 222.2 84% 4.9%;
 
-    --radius: 0.5rem;
+    --radius: 0.75rem;
 
     --sidebar-background: 0 0% 98%;
-
     --sidebar-foreground: 240 5.3% 26.1%;
-
     --sidebar-primary: 240 5.9% 10%;
-
     --sidebar-primary-foreground: 0 0% 98%;
-
     --sidebar-accent: 240 4.8% 95.9%;
-
     --sidebar-accent-foreground: 240 5.9% 10%;
-
     --sidebar-border: 220 13% 91%;
-
     --sidebar-ring: 217.2 91.2% 59.8%;
+
+    /* Custom Premium Variables */
+    --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --gradient-secondary: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    --gradient-accent: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    --gradient-success: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+    --gradient-glass: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
+    --gradient-dark-glass: linear-gradient(135deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.2) 100%);
+    
+    --color-dark: #0a0a0b;
+    --color-light: #ffffff;
+    --color-gray-900: #111827;
+    --color-gray-800: #1f2937;
+    --color-gray-700: #374151;
+    --color-gray-600: #4b5563;
+    --color-gray-500: #6b7280;
+    --color-gray-400: #9ca3af;
+    --color-gray-300: #d1d5db;
+    --color-gray-200: #e5e7eb;
+    --color-gray-100: #f3f4f6;
   }
 
   .dark {
@@ -96,6 +110,120 @@
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-inter;
   }
+  
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+@layer components {
+  .glass-card {
+    @apply backdrop-blur-xl bg-gradient-glass border border-white/20 shadow-xl;
+  }
+  
+  .glass-card-dark {
+    @apply backdrop-blur-xl bg-gradient-dark-glass border border-white/10 shadow-2xl;
+  }
+  
+  .gradient-text {
+    @apply bg-gradient-primary bg-clip-text text-transparent;
+  }
+  
+  .gradient-border {
+    position: relative;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 0.75rem;
+    padding: 1px;
+  }
+  
+  .gradient-border::before {
+    content: '';
+    position: absolute;
+    inset: 1px;
+    background: white;
+    border-radius: inherit;
+  }
+  
+  .btn-gradient {
+    @apply bg-gradient-primary text-white font-semibold px-8 py-4 rounded-xl
+           transition-all duration-300 transform hover:scale-105 hover:shadow-2xl
+           relative overflow-hidden;
+  }
+  
+  .btn-gradient::before {
+    content: '';
+    @apply absolute inset-0 bg-gradient-secondary opacity-0 transition-opacity duration-300;
+  }
+  
+  .btn-gradient:hover::before {
+    @apply opacity-100;
+  }
+  
+  .btn-ghost {
+    @apply bg-transparent border-2 border-white/30 text-white font-semibold px-8 py-4 rounded-xl
+           backdrop-blur-sm transition-all duration-300 hover:bg-white/10 hover:border-white/50;
+  }
+  
+  .feature-card {
+    @apply glass-card p-8 rounded-2xl transition-all duration-500 hover:scale-105 hover:shadow-2xl
+           hover:shadow-purple-500/25 group cursor-pointer;
+  }
+  
+  .floating-card {
+    @apply animate-float;
+    animation-delay: var(--delay, 0s);
+  }
+  
+  .shimmer {
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .shimmer::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+    animation: shimmer 2s infinite;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+/* Smooth scrolling for anchor links */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
+}
+
+/* Firefox scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #667eea transparent;
 }

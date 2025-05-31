@@ -1,12 +1,24 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Calendar, CheckCircle, Clock, Globe, Shield, Zap } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { HeroSection } from "@/components/landing/HeroSection";
+import { FeaturesGrid } from "@/components/landing/FeaturesGrid";
+import { HowItWorksSection } from "@/components/landing/HowItWorksSection";
+import { PricingSection } from "@/components/landing/PricingSection";
+import { Footer } from "@/components/landing/Footer";
+import { Navigation } from "@/components/landing/Navigation";
 
 const Index = () => {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-gray-600">Start building your amazing project here!</p>
-      </div>
+    <div className="min-h-screen bg-gradient-mesh overflow-hidden">
+      <Navigation />
+      <HeroSection />
+      <FeaturesGrid />
+      <HowItWorksSection />
+      <PricingSection />
+      <Footer />
     </div>
   );
 };
