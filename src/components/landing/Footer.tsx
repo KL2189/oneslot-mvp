@@ -1,6 +1,4 @@
 
-import { Calendar } from "lucide-react";
-
 export const Footer = () => {
   return (
     <footer className="bg-gray-900 text-white py-16">
@@ -8,14 +6,17 @@ export const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Logo and description */}
           <div className="col-span-1 md:col-span-2">
-            <div className="flex items-center space-x-2 mb-4">
-              <div className="w-8 h-8 bg-gradient-primary rounded-lg flex items-center justify-center">
-                <Calendar className="w-5 h-5 text-white" />
+            <div className="flex items-center space-x-3 mb-4">
+              <div className="relative w-8 h-8 bg-gradient-primary rounded-lg flex items-center justify-center shadow-lg">
+                <div className="w-2 h-2 bg-white rounded-full"></div>
               </div>
-              <span className="text-xl font-bold">CalendarSync</span>
+              <span className="text-xl font-bold">OneSlot</span>
             </div>
+            <p className="text-gray-400 mb-2 max-w-md font-medium">
+              All calendars. One view.
+            </p>
             <p className="text-gray-400 mb-6 max-w-md">
-              The premium scheduling tool that shows your real availability across all calendars.
+              Where all your time comes together. Never double-book again with OneSlot's multi-calendar scheduling.
             </p>
             
             {/* Newsletter signup */}
@@ -59,7 +60,7 @@ export const Footer = () => {
 
         <div className="border-t border-gray-800 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
           <p className="text-gray-400 text-sm">
-            © 2024 CalendarSync. All rights reserved.
+            © 2024 OneSlot. All calendars. One view.
           </p>
           <div className="flex space-x-6 mt-4 md:mt-0">
             <a href="#" className="text-gray-400 hover:text-white transition-colors">Privacy</a>

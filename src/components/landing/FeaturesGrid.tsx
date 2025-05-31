@@ -3,39 +3,39 @@ import { Calendar, Shield, Clock, Globe, Zap, CheckCircle } from "lucide-react";
 
 const features = [
   {
-    icon: Calendar,
-    title: "Multi-Calendar Sync",
-    description: "Sync Google, Outlook, Apple, and more. See all your commitments in one place.",
+    icon: Zap,
+    title: "One Link",
+    description: "Share one link that checks all your calendars. No more back-and-forth scheduling.",
     gradient: "bg-gradient-primary",
   },
   {
     icon: Shield,
-    title: "Smart Conflict Detection",
-    description: "Never double-book again. Our AI detects conflicts across all your calendars.",
+    title: "One Truth",
+    description: "See your true availability. Our AI detects conflicts across all your calendars instantly.",
     gradient: "bg-gradient-secondary",
   },
   {
-    icon: Zap,
-    title: "Beautiful Booking Pages",
-    description: "Impress clients with stunning, customizable booking pages that match your brand.",
+    icon: CheckCircle,
+    title: "One Click",
+    description: "Book meetings with one click. Stunning pages that impress clients and save time.",
     gradient: "bg-gradient-accent",
   },
   {
     icon: Globe,
-    title: "Time Zone Intelligence",
-    description: "Automatic detection and conversion. Book meetings without timezone confusion.",
+    title: "One Place",
+    description: "Manage all calendars in one place. Automatic timezone detection and conversion.",
     gradient: "bg-gradient-success",
   },
   {
     icon: Clock,
-    title: "Custom Availability",
-    description: "Set complex schedules with ease. Different hours for different types of meetings.",
+    title: "One Schedule",
+    description: "Set complex availability rules once. Different hours for different types of meetings.",
     gradient: "bg-gradient-primary",
   },
   {
-    icon: CheckCircle,
-    title: "Instant Confirmations",
-    description: "Calendar invites sent automatically. Email reminders keep everyone on track.",
+    icon: Calendar,
+    title: "One System",
+    description: "Calendar invites sent automatically. Email reminders keep everyone synchronized.",
     gradient: "bg-gradient-secondary",
   },
 ];
@@ -46,11 +46,11 @@ export const FeaturesGrid = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-20">
           <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-            Everything you need to manage your{" "}
-            <span className="gradient-text">calendar</span>
+            Everything you need in{" "}
+            <span className="gradient-text">one place</span>
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Powerful features designed to save you time and prevent scheduling conflicts.
+            Every calendar. One simple view. Find your OneSlot where all your time comes together.
           </p>
         </div>
 

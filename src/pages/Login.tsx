@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Calendar, Mail, Lock, ArrowLeft } from "lucide-react";
+import { Mail, Lock, ArrowLeft } from "lucide-react";
 import { useNavigate, Link } from "react-router-dom";
 
 export default function Login() {
@@ -37,12 +37,12 @@ export default function Login() {
         
         <div className="relative z-10 flex items-center justify-center w-full text-white p-12">
           <div className="max-w-md text-center">
-            <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-8 backdrop-blur-sm">
-              <Calendar className="w-8 h-8 text-white" />
+            <div className="relative w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-8 backdrop-blur-sm">
+              <div className="w-4 h-4 bg-white rounded-full"></div>
             </div>
-            <h2 className="text-3xl font-bold mb-4">Welcome back!</h2>
+            <h2 className="text-3xl font-bold mb-4">Welcome back to OneSlot!</h2>
             <p className="text-white/80 text-lg">
-              Sign in to access your premium scheduling dashboard and manage your calendars.
+              Sign in to access your premium scheduling dashboard and manage all your calendars in one place.
             </p>
           </div>
         </div>
@@ -62,11 +62,11 @@ export default function Login() {
 
           {/* Header */}
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">Sign in to your account</h1>
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">Sign in to your OneSlot</h1>
             <p className="text-gray-600">
               Don't have an account?{" "}
               <Link to="/signup" className="text-purple-600 hover:text-purple-700 font-medium">
-                Sign up
+                Create your OneSlot
               </Link>
             </p>
           </div>
@@ -86,7 +86,7 @@ export default function Login() {
               <svg className="w-5 h-5 mr-3" fill="#1877F2" viewBox="0 0 24 24">
                 <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
               </svg>
-              Continue with Facebook
+              Continue with Microsoft
             </Button>
           </div>
 

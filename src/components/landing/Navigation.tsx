@@ -2,7 +2,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
-import { Calendar } from "lucide-react";
 
 export const Navigation = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -13,11 +12,11 @@ export const Navigation = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <div className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-gradient-primary rounded-lg flex items-center justify-center">
-              <Calendar className="w-5 h-5 text-white" />
+          <div className="flex items-center space-x-3">
+            <div className="relative w-8 h-8 bg-gradient-primary rounded-lg flex items-center justify-center shadow-lg">
+              <div className="w-2 h-2 bg-white rounded-full"></div>
             </div>
-            <span className="text-xl font-bold gradient-text">CalendarSync</span>
+            <span className="text-xl font-bold gradient-text">OneSlot</span>
           </div>
 
           {/* Desktop Navigation */}
@@ -46,7 +45,7 @@ export const Navigation = () => {
               onClick={() => navigate("/signup")}
               className="btn-gradient relative z-10"
             >
-              Start Free
+              Get Your OneSlot
             </Button>
           </div>
 
@@ -88,7 +87,7 @@ export const Navigation = () => {
                   onClick={() => navigate("/signup")}
                   className="btn-gradient"
                 >
-                  Start Free
+                  Get Your OneSlot
                 </Button>
               </div>
             </div>

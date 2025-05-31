@@ -1,7 +1,7 @@
 
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
-import { Calendar, Play } from "lucide-react";
+import { Play } from "lucide-react";
 import { FloatingCalendarCards } from "./FloatingCalendarCards";
 
 export const HeroSection = () => {
@@ -24,15 +24,13 @@ export const HeroSection = () => {
 
           {/* Main Headline */}
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-gray-900 mb-6 leading-tight">
-            Show Your{" "}
-            <span className="gradient-text">Real Availability</span>
-            <br />
-            Across All Calendars
+            All calendars.{" "}
+            <span className="gradient-text">One view.</span>
           </h1>
 
           {/* Subheadline */}
           <p className="text-xl md:text-2xl text-gray-600 mb-12 max-w-4xl mx-auto leading-relaxed text-balance">
-            Stop missing opportunities. Sync unlimited calendars and let people book when you're actually free.
+            Stop juggling multiple calendars. OneSlot shows your true availability across Google, Outlook, and more.
           </p>
 
           {/* CTA Buttons */}
@@ -41,7 +39,7 @@ export const HeroSection = () => {
               onClick={() => navigate("/signup")}
               className="btn-gradient text-lg px-10 py-6 min-w-[200px]"
             >
-              Start Free
+              Get Your OneSlot
             </Button>
             <Button
               variant="outline"

@@ -69,8 +69,8 @@ export default function Dashboard() {
       <header className="bg-white border-b border-gray-200 px-6 py-4">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
-            <p className="text-gray-600">Welcome back! Here's what's happening today.</p>
+            <h1 className="text-2xl font-bold text-gray-900">Welcome to your OneSlot</h1>
+            <p className="text-gray-600">Here's what's happening with your calendar today.</p>
           </div>
           <div className="flex items-center space-x-4">
             <Button variant="outline" size="sm">
@@ -142,8 +142,11 @@ export default function Dashboard() {
 
               {upcomingMeetings.length === 0 && (
                 <div className="text-center py-12">
-                  <Calendar className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                  <p className="text-gray-600">No meetings scheduled for today</p>
+                  <div className="w-16 h-16 bg-gradient-primary rounded-full flex items-center justify-center mx-auto mb-4">
+                    <span className="text-2xl font-bold text-white">1</span>
+                  </div>
+                  <p className="text-gray-600 mb-2">No meetings scheduled for today</p>
+                  <p className="text-gray-500 text-sm">Connect your calendars to create your OneSlot</p>
                 </div>
               )}
             </div>
@@ -161,7 +164,7 @@ export default function Dashboard() {
                 </Button>
                 <Button variant="outline" className="w-full justify-start">
                   <ExternalLink className="w-4 h-4 mr-3" />
-                  Share Booking Link
+                  Share Your OneSlot
                 </Button>
                 <Button variant="outline" className="w-full justify-start">
                   <Calendar className="w-4 h-4 mr-3" />
@@ -180,15 +183,15 @@ export default function Dashboard() {
               <div className="space-y-3">
                 <div className="flex items-center text-sm">
                   <div className="w-2 h-2 bg-green-500 rounded-full mr-3"></div>
-                  <span className="text-gray-600">New booking from Sarah Johnson</span>
+                  <span className="text-gray-600">New slot booked by Sarah Johnson</span>
                 </div>
                 <div className="flex items-center text-sm">
                   <div className="w-2 h-2 bg-blue-500 rounded-full mr-3"></div>
-                  <span className="text-gray-600">Calendar synced successfully</span>
+                  <span className="text-gray-600">All calendars synced successfully</span>
                 </div>
                 <div className="flex items-center text-sm">
                   <div className="w-2 h-2 bg-purple-500 rounded-full mr-3"></div>
-                  <span className="text-gray-600">Meeting type updated</span>
+                  <span className="text-gray-600">OneSlot link shared</span>
                 </div>
               </div>
             </div>

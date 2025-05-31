@@ -6,21 +6,21 @@ const steps = [
     number: "01",
     icon: Calendar,
     title: "Connect Your Calendars",
-    description: "Link all your calendars in seconds. We support Google, Outlook, Apple, and more.",
+    description: "Link all your calendars in seconds. Google, Outlook, Apple, and more work seamlessly together.",
     gradient: "bg-gradient-primary",
   },
   {
     number: "02",
     icon: Link,
-    title: "Share Your Link",
-    description: "Get a beautiful, customizable booking page. Share it anywhere, anytime.",
+    title: "Share Your OneSlot",
+    description: "Get one beautiful link. Share it anywhere and let people see your real availability.",
     gradient: "bg-gradient-secondary",
   },
   {
     number: "03",
     icon: CheckCircle,
-    title: "Get Booked",
-    description: "People see your real availability and book when you're actually free.",
+    title: "Book the Right Slot",
+    description: "People book when you're actually free. Never worry about double-booking again.",
     gradient: "bg-gradient-accent",
   },
 ];
@@ -31,7 +31,7 @@ export const HowItWorksSection = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-20">
           <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-            How it <span className="gradient-text">works</span>
+            Find your <span className="gradient-text">OneSlot</span>
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
             Get started in minutes, not hours. No complex setup required.
