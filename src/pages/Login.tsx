@@ -37,8 +37,12 @@ export default function Login() {
         
         <div className="relative z-10 flex items-center justify-center w-full text-white p-12">
           <div className="max-w-md text-center">
-            <div className="relative w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-8 backdrop-blur-sm">
-              <div className="w-4 h-4 bg-white rounded-full"></div>
+            <div className="relative w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-8 backdrop-blur-sm">
+              <img 
+                src="/lovable-uploads/44f80683-f225-4dba-b579-3134f62c29af.png" 
+                alt="OneSlot Logo" 
+                className="w-12 h-12"
+              />
             </div>
             <h2 className="text-3xl font-bold mb-4">Welcome back to OneSlot!</h2>
             <p className="text-white/80 text-lg">

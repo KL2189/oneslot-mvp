@@ -13,9 +13,11 @@ export const Navigation = () => {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <div className="flex items-center space-x-3">
-            <div className="relative w-8 h-8 bg-gradient-primary rounded-lg flex items-center justify-center shadow-lg">
-              <div className="w-2 h-2 bg-white rounded-full"></div>
-            </div>
+            <img 
+              src="/lovable-uploads/44f80683-f225-4dba-b579-3134f62c29af.png" 
+              alt="OneSlot Logo" 
+              className="w-8 h-8"
+            />
             <span className="text-xl font-bold gradient-text">OneSlot</span>
           </div>
 
