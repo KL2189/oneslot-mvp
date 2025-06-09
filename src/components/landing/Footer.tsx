@@ -7,11 +7,9 @@ export const Footer = () => {
           {/* Logo and description */}
           <div className="col-span-1 md:col-span-2">
             <div className="flex items-center space-x-3 mb-4">
-              <img 
-                src="/lovable-uploads/44f80683-f225-4dba-b579-3134f62c29af.png" 
-                alt="OneSlot Logo" 
-                className="w-8 h-8"
-              />
+              <div className="relative w-8 h-8 bg-gradient-primary rounded-lg flex items-center justify-center shadow-lg">
+                <div className="w-2 h-2 bg-white rounded-full"></div>
+              </div>
               <span className="text-xl font-bold">OneSlot</span>
             </div>
             <p className="text-gray-400 mb-2 max-w-md font-medium">
