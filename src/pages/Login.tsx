@@ -4,13 +4,17 @@ import { useGoogleAuth } from "@/hooks/useGoogleAuth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Mail, Lock, ArrowLeft } from "lucide-react";
+import { Calendar, Mail, Lock, User, ArrowLeft, CheckCircle } from "lucide-react";
 import { useNavigate, Link } from "react-router-dom";
 
-export default function Login() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+export default function Signup() {
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
+  });
   const [isLoading, setIsLoading] = useState(false);
+  const [passwordStrength, setPasswordStrength] = useState(0);
   const navigate = useNavigate();
 
   const googleSignIn = useGoogleAuth(() => {
@@ -21,33 +25,33 @@ export default function Login() {
     }, 1000);
   });
 
+  const handleInputChange = (field: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setFormData(prev => ({ ...prev, [field]: value }));
+    
+    if (field === "password") {
+      // Simple password strength calculation
+      let strength = 0;
+      if (value.length >= 8) strength++;
+      if (/[A-Z]/.test(value)) strength++;
+      if (/[0-9]/.test(value)) strength++;
+      if (/[^A-Za-z0-9]/.test(value)) strength++;
+      setPasswordStrength(strength);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     
-    // Simulate login - replace with actual auth logic
+    // Simulate signup - replace with actual auth logic
     setTimeout(() => {
       setIsLoading(false);
       navigate("/dashboard");
     }, 1000);
   };
-
-  return (
-    <div className="min-h-screen bg-gradient-mesh flex">
-      {/* Left side - Animated Background */}
-      <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-primary opacity-90"></div>
-        <div className="absolute inset-0 bg-gradient-mesh opacity-30"></div>
-        
-        {/* Floating shapes */}
-        <div className="absolute top-20 left-20 w-32 h-32 bg-white/10 rounded-full blur-xl animate-float"></div>
-        <div className="absolute top-40 right-32 w-24 h-24 bg-white/20 rounded-full blur-lg animate-float" style={{animationDelay: "1s"}}></div>
-        <div className="absolute bottom-32 left-32 w-40 h-40 bg-white/5 rounded-full blur-2xl animate-float" style={{animationDelay: "2s"}}></div>
-        
-        <div className="relative z-10 flex items-center justify-center w-full text-white p-12">
-          <div className="max-w-md text-center">
-@@ -51,51 +60,55 @@ export default function Login() {
-      {/* Right side - Login Form */}
+@@ -117,51 +126,55 @@ export default function Signup() {
+      {/* Right side - Signup Form */}
       <div className="w-full lg:w-1/2 flex items-center justify-center p-8">
         <div className="w-full max-w-md">
           {/* Back button */}
@@ -61,16 +65,16 @@ export default function Login() {
 
           {/* Header */}
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">Sign in to your OneSlot</h1>
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">Create your account</h1>
             <p className="text-gray-600">
-              Don't have an account?{" "}
-              <Link to="/signup" className="text-purple-600 hover:text-purple-700 font-medium">
-                Create your OneSlot
+              Already have an account?{" "}
+              <Link to="/login" className="text-purple-600 hover:text-purple-700 font-medium">
+                Sign in
               </Link>
             </p>
           </div>
 
-          {/* Social Login */}
+          {/* Social Signup */}
           <div className="space-y-3 mb-6">
             <Button variant="outline" className="w-full py-3 border-2 hover:bg-gray-50">
             <Button
@@ -90,7 +94,7 @@ export default function Login() {
               <svg className="w-5 h-5 mr-3" fill="#1877F2" viewBox="0 0 24 24">
                 <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
               </svg>
-              Continue with Microsoft
+              Continue with Facebook
             </Button>
           </div>
 
@@ -100,6 +104,6 @@ export default function Login() {
               <div className="w-full border-t border-gray-300"></div>
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="px-2 bg-white text-gray-500">Or continue with email</span>
+              <span className="px-2 bg-white text-gray-500">Or create with email</span>
             </div>
           </div>
