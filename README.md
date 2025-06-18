@@ -60,6 +60,12 @@ This project is built with:
 - shadcn-ui
 - Tailwind CSS
 
+## Google Sign-in
+
+The Google authentication buttons use the Google Identity Services script. Replace
+`YOUR_GOOGLE_CLIENT_ID` in `src/hooks/useGoogleAuth.ts` with your own OAuth
+client ID to enable the popup sign in flow.
+
 ## How can I deploy this project?
 
 Simply open [Lovable](https://lovable.dev/projects/3f292393-6c3d-44e5-8728-3f7b7d1d719f) and click on Share -> Publish.
