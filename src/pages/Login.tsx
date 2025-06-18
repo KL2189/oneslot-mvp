@@ -1,5 +1,6 @@
 
 import { useState } from "react";
+import { useGoogleAuth } from "@/hooks/useGoogleAuth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -11,6 +12,14 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+
+  const googleSignIn = useGoogleAuth(() => {
+    setIsLoading(true);
+    setTimeout(() => {
+      setIsLoading(false);
+      navigate("/dashboard");
+    }, 1000);
+  });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -37,17 +46,7 @@ export default function Login() {
         
         <div className="relative z-10 flex items-center justify-center w-full text-white p-12">
           <div className="max-w-md text-center">
-            <div className="relative w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-8 backdrop-blur-sm">
-              <div className="w-4 h-4 bg-white rounded-full"></div>
-            </div>
-            <h2 className="text-3xl font-bold mb-4">Welcome back to OneSlot!</h2>
-            <p className="text-white/80 text-lg">
-              Sign in to access your premium scheduling dashboard and manage all your calendars in one place.
-            </p>
-          </div>
-        </div>
-      </div>
-
+@@ -51,51 +60,55 @@ export default function Login() {
       {/* Right side - Login Form */}
       <div className="w-full lg:w-1/2 flex items-center justify-center p-8">
         <div className="w-full max-w-md">
@@ -74,6 +73,11 @@ export default function Login() {
           {/* Social Login */}
           <div className="space-y-3 mb-6">
             <Button variant="outline" className="w-full py-3 border-2 hover:bg-gray-50">
+            <Button
+              variant="outline"
+              className="w-full py-3 border-2 hover:bg-gray-50"
+              onClick={googleSignIn}
+            >
               <svg className="w-5 h-5 mr-3" viewBox="0 0 24 24">
                 <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
                 <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
@@ -99,77 +103,3 @@ export default function Login() {
               <span className="px-2 bg-white text-gray-500">Or continue with email</span>
             </div>
           </div>
-
-          {/* Login Form */}
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div>
-              <Label htmlFor="email">Email address</Label>
-              <div className="relative mt-2">
-                <Input
-                  id="email"
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Enter your email"
-                  className="pl-10 py-3 border-2 focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                  required
-                />
-                <Mail className="w-5 h-5 text-gray-400 absolute left-3 top-3.5" />
-              </div>
-            </div>
-
-            <div>
-              <Label htmlFor="password">Password</Label>
-              <div className="relative mt-2">
-                <Input
-                  id="password"
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Enter your password"
-                  className="pl-10 py-3 border-2 focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                  required
-                />
-                <Lock className="w-5 h-5 text-gray-400 absolute left-3 top-3.5" />
-              </div>
-            </div>
-
-            <div className="flex items-center justify-between">
-              <label className="flex items-center">
-                <input type="checkbox" className="rounded border-gray-300 text-purple-600 focus:ring-purple-500" />
-                <span className="ml-2 text-sm text-gray-600">Remember me</span>
-              </label>
-              <a href="#" className="text-sm text-purple-600 hover:text-purple-700">
-                Forgot password?
-              </a>
-            </div>
-
-            <Button
-              type="submit"
-              disabled={isLoading}
-              className="w-full btn-gradient py-3 relative"
-            >
-              {isLoading ? (
-                <div className="flex items-center justify-center">
-                  <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin mr-2"></div>
-                  Signing in...
-                </div>
-              ) : (
-                "Sign in"
-              )}
-            </Button>
-          </form>
-
-          {/* Magic Link Option */}
-          <div className="mt-8 p-4 glass-card rounded-xl text-center">
-            <p className="text-sm text-gray-600 mb-3">Prefer passwordless login?</p>
-            <Button variant="outline" className="w-full">
-              <Mail className="w-4 h-4 mr-2" />
-              Send magic link
-            </Button>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
