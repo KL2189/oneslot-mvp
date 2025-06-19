@@ -63,7 +63,7 @@ This project is built with:
 ## Google Sign-in
 
 The Google authentication buttons use the Google Identity Services script. Replace
-`YOUR_GOOGLE_CLIENT_ID` in `src/hooks/useGoogleAuth.ts` with your own OAuth
+`[639598258036-a50afnl0abv4vn75596iu4um4d20dmtg.apps.googleusercontent.com](http://639598258036-a50afnl0abv4vn75596iu4um4d20dmtg.apps.googleusercontent.com/)` in `src/hooks/useGoogleAuth.ts` with your own OAuth
 client ID to enable the popup sign in flow.
 
 ## How can I deploy this project?
