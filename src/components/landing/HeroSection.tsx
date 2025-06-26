@@ -43,7 +43,7 @@ export const HeroSection = () => {
             </Button>
             <Button
               variant="outline"
-              className="btn-ghost text-lg px-10 py-6 min-w-[200px] group"
+              className="bg-transparent border-2 border-gray-300 text-gray-700 font-semibold px-10 py-6 min-w-[200px] text-lg rounded-xl backdrop-blur-sm transition-all duration-300 hover:bg-white/10 hover:border-gray-400 hover:text-gray-800 group"
             >
               <Play className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform" />
               See How It Works
