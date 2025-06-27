@@ -166,7 +166,11 @@ export default function Dashboard() {
                   <ExternalLink className="w-4 h-4 mr-3" />
                   Share Your OneSlot
                 </Button>
-                <Button variant="outline" className="w-full justify-start">
+                <Button 
+                  variant="outline" 
+                  className="w-full justify-start"
+                  onClick={() => navigate('/calendar-connections')}
+                >
                   <Calendar className="w-4 h-4 mr-3" />
                   Connect Calendar
                 </Button>
