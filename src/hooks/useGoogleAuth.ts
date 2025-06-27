@@ -15,12 +15,6 @@ export function useGoogleAuth(onSuccess: (code: string) => void) {
   const clientRef = useRef<any>(null);
 
   useEffect(() => {
-    // Check if Google Client ID is configured
-    if (!GOOGLE_CLIENT_ID || GOOGLE_CLIENT_ID === "YOUR_ACTUAL_CLIENT_ID_HERE") {
-      console.warn("Google OAuth Client ID not configured. Please set up your Google OAuth credentials.");
-      return;
-    }
-
     if (window.google && window.google.accounts && !clientRef.current) {
       clientRef.current = window.google.accounts.oauth2.initCodeClient({
         client_id: GOOGLE_CLIENT_ID,
@@ -36,11 +30,6 @@ export function useGoogleAuth(onSuccess: (code: string) => void) {
   }, [onSuccess]);
 
   const signIn = useCallback(() => {
-    if (!GOOGLE_CLIENT_ID || GOOGLE_CLIENT_ID === "YOUR_ACTUAL_CLIENT_ID_HERE") {
-      alert("Google OAuth is not configured. Please set up your Google Client ID first.");
-      return;
-    }
-
     if (clientRef.current) {
       clientRef.current.requestCode();
     } else {
