@@ -1,11 +1,31 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Calendar, Users, Clock, TrendingUp, Plus, Settings, ExternalLink } from "lucide-react";
+import { Calendar, Users, Clock, TrendingUp, Plus, Settings, ExternalLink, LogOut } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
+import { useToast } from "@/hooks/use-toast";
 
 export default function Dashboard() {
   const navigate = useNavigate();
+  const { user, signOut } = useAuth();
+  const { toast } = useToast();
+
+  const handleSignOut = async () => {
+    const { error } = await signOut();
+    if (error) {
+      toast({
+        title: "Error",
+        description: "Failed to sign out. Please try again.",
+        variant: "destructive",
+      });
+    } else {
+      toast({
+        title: "Signed out",
+        description: "You have been successfully signed out.",
+      });
+      navigate("/");
+    }
+  };
 
   // Mock data
   const stats = [
@@ -69,13 +89,19 @@ export default function Dashboard() {
       <header className="bg-white border-b border-gray-200 px-6 py-4">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Welcome to your OneSlot</h1>
+            <h1 className="text-2xl font-bold text-gray-900">
+              Welcome to your OneSlot{user?.email ? `, ${user.email.split('@')[0]}` : ''}
+            </h1>
             <p className="text-gray-600">Here's what's happening with your calendar today.</p>
           </div>
           <div className="flex items-center space-x-4">
             <Button variant="outline" size="sm">
               <Settings className="w-4 h-4 mr-2" />
               Settings
+            </Button>
+            <Button variant="outline" size="sm" onClick={handleSignOut}>
+              <LogOut className="w-4 h-4 mr-2" />
+              Sign Out
             </Button>
             <Button className="btn-gradient">
               <Plus className="w-4 h-4 mr-2" />

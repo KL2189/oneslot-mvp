@@ -1,10 +1,11 @@
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Calendar, CheckCircle, Plus, Settings, AlertCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
 
 interface ConnectedAccount {
   id: string;
@@ -15,8 +16,38 @@ interface ConnectedAccount {
 export default function CalendarConnections() {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { user } = useAuth();
   const [connectedAccounts, setConnectedAccounts] = useState<ConnectedAccount[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (user) {
+      fetchConnectedAccounts();
+    }
+  }, [user]);
+
+  const fetchConnectedAccounts = async () => {
+    if (!user) return;
+    
+    try {
+      const { data, error } = await supabase
+        .from('calendar_accounts')
+        .select('id, provider, email')
+        .eq('user_id', user.id);
+
+      if (error) throw error;
+      setConnectedAccounts(data || []);
+    } catch (error) {
+      console.error('Error fetching connected accounts:', error);
+      toast({
+        title: "Error",
+        description: "Failed to load connected accounts",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const connectGoogleCalendar = async () => {
     toast({
@@ -33,13 +64,31 @@ export default function CalendarConnections() {
   };
 
   const disconnectAccount = async (accountId: string) => {
-    // Remove account from local state for now
-    setConnectedAccounts(prev => prev.filter(account => account.id !== accountId));
-    
-    toast({
-      title: "Success",
-      description: "Calendar disconnected successfully",
-    });
+    if (!user) return;
+
+    try {
+      const { error } = await supabase
+        .from('calendar_accounts')
+        .delete()
+        .eq('id', accountId)
+        .eq('user_id', user.id);
+
+      if (error) throw error;
+
+      toast({
+        title: "Success",
+        description: "Calendar disconnected successfully",
+      });
+
+      fetchConnectedAccounts();
+    } catch (error) {
+      console.error('Error disconnecting account:', error);
+      toast({
+        title: "Error",
+        description: "Failed to disconnect calendar",
+        variant: "destructive",
+      });
+    }
   };
 
   if (loading) {
