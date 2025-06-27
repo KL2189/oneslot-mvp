@@ -1,9 +1,9 @@
-
 import { useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { GoogleSignInButton } from "@/components/GoogleSignInButton";
 import { Calendar, Mail, Lock, User, ArrowLeft, CheckCircle } from "lucide-react";
 import { useNavigate, Link } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
@@ -111,7 +111,6 @@ export default function Signup() {
         <div className="absolute inset-0 bg-gradient-secondary opacity-90"></div>
         <div className="absolute inset-0 bg-gradient-mesh opacity-30"></div>
         
-        {/* Floating shapes */}
         <div className="absolute top-20 left-20 w-32 h-32 bg-white/10 rounded-full blur-xl animate-float"></div>
         <div className="absolute top-40 right-32 w-24 h-24 bg-white/20 rounded-full blur-lg animate-float" style={{animationDelay: "1s"}}></div>
         <div className="absolute bottom-32 left-32 w-40 h-40 bg-white/5 rounded-full blur-2xl animate-float" style={{animationDelay: "2s"}}></div>
@@ -126,7 +125,6 @@ export default function Signup() {
               Start your journey with the most powerful scheduling tool ever built.
             </p>
             
-            {/* Benefits */}
             <div className="space-y-4 text-left">
               {[
                 "Sync unlimited calendars",
@@ -147,7 +145,6 @@ export default function Signup() {
       {/* Right side - Signup Form */}
       <div className="w-full lg:w-1/2 flex items-center justify-center p-8">
         <div className="w-full max-w-md">
-          {/* Back button */}
           <button
             onClick={() => navigate("/")}
             className="flex items-center text-gray-600 hover:text-gray-900 mb-8 transition-colors"
@@ -156,7 +153,6 @@ export default function Signup() {
             Back to home
           </button>
 
-          {/* Header */}
           <div className="text-center mb-8">
             <h1 className="text-3xl font-bold text-gray-900 mb-2">Create your account</h1>
             <p className="text-gray-600">
@@ -165,6 +161,21 @@ export default function Signup() {
                 Sign in
               </Link>
             </p>
+          </div>
+
+          {/* Google Sign Up */}
+          <div className="mb-6">
+            <GoogleSignInButton mode="signup" />
+          </div>
+
+          {/* Divider */}
+          <div className="relative mb-6">
+            <div className="absolute inset-0 flex items-center">
+              <span className="w-full border-t border-gray-300" />
+            </div>
+            <div className="relative flex justify-center text-sm">
+              <span className="px-2 bg-white text-gray-500">Or continue with email</span>
+            </div>
           </div>
 
           {/* Signup Form */}
@@ -270,7 +281,6 @@ export default function Signup() {
             </Button>
           </form>
 
-          {/* Email verification notice */}
           <div className="mt-6 p-4 glass-card rounded-xl">
             <p className="text-sm text-gray-600 text-center">
               By signing up, you'll receive a verification email to confirm your account.

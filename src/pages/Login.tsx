@@ -4,7 +4,8 @@ import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Mail, Lock, ArrowLeft, CheckCircle, AlertCircle } from "lucide-react";
+import { GoogleSignInButton } from "@/components/GoogleSignInButton";
+import { Mail, Lock, ArrowLeft, CheckCircle } from "lucide-react";
 import { useNavigate, Link } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 
@@ -73,7 +74,6 @@ export default function Login() {
         </div>
 
         <div className="relative z-10 flex flex-col justify-center max-w-md">
-          {/* Logo */}
           <div className="flex items-center space-x-3 mb-8">
             <div className="relative w-8 h-8 bg-white rounded-lg flex items-center justify-center shadow-lg">
               <div className="w-2 h-2 bg-purple-600 rounded-full"></div>
@@ -88,7 +88,6 @@ export default function Login() {
             Access your unified calendar view and never miss a meeting again.
           </p>
 
-          {/* Features list */}
           <div className="space-y-4">
             <div className="flex items-center space-x-3">
               <CheckCircle className="w-5 h-5 text-white flex-shrink-0" />
@@ -109,7 +108,6 @@ export default function Login() {
       {/* Right side - Login Form */}
       <div className="w-full lg:w-1/2 flex items-center justify-center p-8">
         <div className="w-full max-w-md">
-          {/* Back button */}
           <button
             onClick={() => navigate("/")}
             className="flex items-center text-gray-600 hover:text-gray-900 mb-8 transition-colors"
@@ -118,7 +116,6 @@ export default function Login() {
             Back to home
           </button>
 
-          {/* Header */}
           <div className="text-center mb-8">
             <h1 className="text-3xl font-bold text-gray-900 mb-2">Sign in to OneSlot</h1>
             <p className="text-gray-600">
@@ -127,6 +124,21 @@ export default function Login() {
                 Create your OneSlot
               </Link>
             </p>
+          </div>
+
+          {/* Google Sign In */}
+          <div className="mb-6">
+            <GoogleSignInButton mode="signin" />
+          </div>
+
+          {/* Divider */}
+          <div className="relative mb-6">
+            <div className="absolute inset-0 flex items-center">
+              <span className="w-full border-t border-gray-300" />
+            </div>
+            <div className="relative flex justify-center text-sm">
+              <span className="px-2 bg-white text-gray-500">Or continue with email</span>
+            </div>
           </div>
 
           {/* Login Form */}
@@ -167,7 +179,6 @@ export default function Login() {
               </div>
             </div>
 
-            {/* Forgot password link */}
             <div className="text-right">
               <Link to="#" className="text-sm text-purple-600 hover:text-purple-700 font-medium">
                 Forgot your password?
@@ -190,7 +201,6 @@ export default function Login() {
             </Button>
           </form>
 
-          {/* Terms */}
           <p className="text-xs text-gray-500 text-center mt-6">
             By signing in, you agree to our{" "}
             <Link to="#" className="text-purple-600 hover:text-purple-700">Terms of Service</Link>{" "}
