@@ -1,6 +1,8 @@
+
 import { useCallback, useEffect, useRef } from "react";
 
-// Replace with your actual Google OAuth client id
+// TODO: Replace with your actual Google OAuth client ID from Google Cloud Console
+// Get it from: https://console.cloud.google.com/apis/credentials
 const GOOGLE_CLIENT_ID = "YOUR_GOOGLE_CLIENT_ID";
 
 declare global {
@@ -13,6 +15,12 @@ export function useGoogleAuth(onSuccess: (code: string) => void) {
   const clientRef = useRef<any>(null);
 
   useEffect(() => {
+    // Check if Google Client ID is configured
+    if (GOOGLE_CLIENT_ID === "YOUR_GOOGLE_CLIENT_ID") {
+      console.warn("Google OAuth Client ID not configured. Please set up your Google OAuth credentials.");
+      return;
+    }
+
     if (window.google && window.google.accounts && !clientRef.current) {
       clientRef.current = window.google.accounts.oauth2.initCodeClient({
         client_id: GOOGLE_CLIENT_ID,
@@ -28,6 +36,11 @@ export function useGoogleAuth(onSuccess: (code: string) => void) {
   }, [onSuccess]);
 
   const signIn = useCallback(() => {
+    if (GOOGLE_CLIENT_ID === "YOUR_GOOGLE_CLIENT_ID") {
+      alert("Google OAuth is not configured. Please set up your Google Client ID first.");
+      return;
+    }
+
     if (clientRef.current) {
       clientRef.current.requestCode();
     } else {

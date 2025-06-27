@@ -9,7 +9,177 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      availability: {
+        Row: {
+          day_of_week: number
+          end_time: string
+          id: string
+          start_time: string
+          user_id: string | null
+        }
+        Insert: {
+          day_of_week: number
+          end_time: string
+          id?: string
+          start_time: string
+          user_id?: string | null
+        }
+        Update: {
+          day_of_week?: number
+          end_time?: string
+          id?: string
+          start_time?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "availability_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      bookings: {
+        Row: {
+          end_time: string
+          guest_email: string
+          guest_name: string
+          host_id: string | null
+          id: string
+          meeting_type_id: string | null
+          start_time: string
+        }
+        Insert: {
+          end_time: string
+          guest_email: string
+          guest_name: string
+          host_id?: string | null
+          id?: string
+          meeting_type_id?: string | null
+          start_time: string
+        }
+        Update: {
+          end_time?: string
+          guest_email?: string
+          guest_name?: string
+          host_id?: string | null
+          id?: string
+          meeting_type_id?: string | null
+          start_time?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bookings_host_id_fkey"
+            columns: ["host_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bookings_meeting_type_id_fkey"
+            columns: ["meeting_type_id"]
+            isOneToOne: false
+            referencedRelation: "meeting_types"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      calendar_accounts: {
+        Row: {
+          access_token: string | null
+          email: string
+          id: string
+          provider: string
+          refresh_token: string | null
+          user_id: string | null
+        }
+        Insert: {
+          access_token?: string | null
+          email: string
+          id?: string
+          provider: string
+          refresh_token?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          access_token?: string | null
+          email?: string
+          id?: string
+          provider?: string
+          refresh_token?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "calendar_accounts_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      meeting_types: {
+        Row: {
+          color: string | null
+          duration: number
+          id: string
+          name: string
+          slug: string
+          user_id: string | null
+        }
+        Insert: {
+          color?: string | null
+          duration: number
+          id?: string
+          name: string
+          slug: string
+          user_id?: string | null
+        }
+        Update: {
+          color?: string | null
+          duration?: number
+          id?: string
+          name?: string
+          slug?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "meeting_types_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          full_name: string | null
+          id: string
+          timezone: string | null
+          username: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          full_name?: string | null
+          id: string
+          timezone?: string | null
+          username?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          full_name?: string | null
+          id?: string
+          timezone?: string | null
+          username?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
