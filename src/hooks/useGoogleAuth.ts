@@ -16,7 +16,7 @@ export function useGoogleAuth(onSuccess: (code: string) => void) {
 
   useEffect(() => {
     // Check if Google Client ID is configured
-    if (!GOOGLE_CLIENT_ID || GOOGLE_CLIENT_ID.includes("639598258036-a50afnl0abv4vn75596iu4um4d20dmtg.apps.googleusercontent.com")) {
+    if (!GOOGLE_CLIENT_ID || GOOGLE_CLIENT_ID === "YOUR_ACTUAL_CLIENT_ID_HERE") {
       console.warn("Google OAuth Client ID not configured. Please set up your Google OAuth credentials.");
       return;
     }
@@ -36,7 +36,7 @@ export function useGoogleAuth(onSuccess: (code: string) => void) {
   }, [onSuccess]);
 
   const signIn = useCallback(() => {
-    if (!GOOGLE_CLIENT_ID || GOOGLE_CLIENT_ID.includes("YOUR_ACTUAL_CLIENT_ID_HERE")) {
+    if (!GOOGLE_CLIENT_ID || GOOGLE_CLIENT_ID === "YOUR_ACTUAL_CLIENT_ID_HERE") {
       alert("Google OAuth is not configured. Please set up your Google Client ID first.");
       return;
     }
