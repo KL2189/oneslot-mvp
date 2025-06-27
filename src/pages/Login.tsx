@@ -17,14 +17,24 @@ export default function Login() {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { signIn, user } = useAuth();
+  const { signIn, user, loading } = useAuth();
 
   // Handle redirect if already logged in
   useEffect(() => {
-    if (user) {
+    if (!loading && user) {
+      console.log('User logged in, redirecting to dashboard');
       navigate("/dashboard");
     }
-  }, [user, navigate]);
+  }, [user, loading, navigate]);
+
+  // Show loading spinner while checking auth state
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600"></div>
+      </div>
+    );
+  }
 
   const handleInputChange = (field: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -36,22 +46,26 @@ export default function Login() {
     setIsLoading(true);
     
     try {
+      console.log('Attempting to sign in with:', formData.email);
       const { error } = await signIn(formData.email, formData.password);
       
       if (error) {
+        console.error('Sign in error:', error);
         toast({
           title: "Login Failed",
           description: error.message,
           variant: "destructive",
         });
       } else {
+        console.log('Sign in successful');
         toast({
           title: "Welcome back!",
           description: "You have successfully signed in.",
         });
-        navigate("/dashboard");
+        // Navigation will happen via useEffect when user state updates
       }
     } catch (error) {
+      console.error('Unexpected error:', error);
       toast({
         title: "Error",
         description: "An unexpected error occurred. Please try again.",
