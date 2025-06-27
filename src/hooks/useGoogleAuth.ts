@@ -3,7 +3,7 @@ import { useCallback, useEffect, useRef } from "react";
 
 // TODO: Replace with your actual Google OAuth client ID from Google Cloud Console
 // Get it from: https://console.cloud.google.com/apis/credentials
-const GOOGLE_CLIENT_ID = "YOUR_GOOGLE_CLIENT_ID";
+const GOOGLE_CLIENT_ID = "639598258036-a50afnl0abv4vn75596iu4um4d20dmtg.apps.googleusercontent.com";
 
 declare global {
   interface Window {
