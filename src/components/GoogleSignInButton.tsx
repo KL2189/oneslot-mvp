@@ -19,10 +19,8 @@ export function GoogleSignInButton({ mode }: GoogleSignInButtonProps) {
 
   const handleClick = async () => {
     try {
-      console.log('Google sign-in button clicked');
       await signInWithGoogle();
     } catch (error) {
-      console.error('Google authentication error:', error);
       toast({
         title: "Authentication Failed",
         description: "Failed to authenticate with Google. Please try again.",

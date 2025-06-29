@@ -17,99 +17,58 @@ export function useAuth() {
   });
 
   useEffect(() => {
-    let mounted = true;
-
-    // Get initial session
-    const getInitialSession = async () => {
-      try {
-        const { data: { session }, error } = await supabase.auth.getSession();
-        if (error) {
-          console.error('Error getting session:', error);
-        }
-        
-        if (mounted) {
-          setAuthState({
-            user: session?.user ?? null,
-            session,
-            loading: false,
-          });
-        }
-      } catch (error) {
-        console.error('Session initialization error:', error);
-        if (mounted) {
-          setAuthState({
-            user: null,
-            session: null,
-            loading: false,
-          });
-        }
-      }
-    };
-
     // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
-        console.log('Auth state changed:', event, session);
-        if (mounted) {
-          setAuthState({
-            user: session?.user ?? null,
-            session,
-            loading: false,
-          });
-        }
+        setAuthState({
+          user: session?.user ?? null,
+          session,
+          loading: false,
+        });
       }
     );
 
-    getInitialSession();
+    // Get initial session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setAuthState({
+        user: session?.user ?? null,
+        session,
+        loading: false,
+      });
+    });
 
-    return () => {
-      mounted = false;
-      subscription.unsubscribe();
-    };
+    return () => subscription.unsubscribe();
   }, []);
 
   const signUp = async (email: string, password: string, fullName?: string) => {
-    try {
-      const { data, error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          emailRedirectTo: `${window.location.origin}/dashboard`,
-          data: {
-            full_name: fullName,
-          },
+    const redirectUrl = `${window.location.origin}/`;
+    
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        emailRedirectTo: redirectUrl,
+        data: {
+          full_name: fullName,
         },
-      });
-      
-      return { data, error };
-    } catch (error) {
-      console.error('SignUp error:', error);
-      return { data: null, error };
-    }
+      },
+    });
+    
+    return { data, error };
   };
 
   const signIn = async (email: string, password: string) => {
-    try {
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
-      
-      return { data, error };
-    } catch (error) {
-      console.error('SignIn error:', error);
-      return { data: null, error };
-    }
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+    
+    return { data, error };
   };
 
   const signOut = async () => {
-    try {
-      const { error } = await supabase.auth.signOut();
-      return { error };
-    } catch (error) {
-      console.error('SignOut error:', error);
-      return { error };
-    }
+    const { error } = await supabase.auth.signOut();
+    return { error };
   };
 
   return {
