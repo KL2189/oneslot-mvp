@@ -1,29 +1,40 @@
 
-import { useCallback } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { useCallback, useEffect, useRef } from "react";
 
-export function useGoogleAuth(onSuccess: (session: any) => void) {
-  const signIn = useCallback(async () => {
-    try {
-      const { data, error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: {
-          redirectTo: `${window.location.origin}/dashboard`
-        }
+// Updated Google OAuth client ID
+const GOOGLE_CLIENT_ID = "639598258036-a50afnl0abv4vn75596iu4um4d20dmtg.apps.googleusercontent.com";
+
+declare global {
+  interface Window {
+    google?: any;
+  }
+}
+
+export function useGoogleAuth(onSuccess: (code: string) => void) {
+  const clientRef = useRef<any>(null);
+
+  useEffect(() => {
+    if (window.google && window.google.accounts && !clientRef.current) {
+      clientRef.current = window.google.accounts.oauth2.initCodeClient({
+        client_id: GOOGLE_CLIENT_ID,
+        scope: "openid email profile https://www.googleapis.com/auth/calendar.readonly",
+        ux_mode: "popup",
+        callback: (response: any) => {
+          if (response.code) {
+            onSuccess(response.code);
+          }
+        },
       });
-
-      if (error) {
-        console.error('Google sign-in error:', error);
-        throw error;
-      }
-
-      // The actual session will be handled by the auth state change listener
-      // in useAuth, so we don't need to call onSuccess here
-    } catch (error) {
-      console.error('Google authentication failed:', error);
-      throw error;
     }
   }, [onSuccess]);
+
+  const signIn = useCallback(() => {
+    if (clientRef.current) {
+      clientRef.current.requestCode();
+    } else {
+      console.warn("Google OAuth client not initialized");
+    }
+  }, []);
 
   return signIn;
 }

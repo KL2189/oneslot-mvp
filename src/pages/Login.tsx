@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -19,12 +19,11 @@ export default function Login() {
   const { toast } = useToast();
   const { signIn, user } = useAuth();
 
-  // Handle redirect if already logged in
-  useEffect(() => {
-    if (user) {
-      navigate("/dashboard");
-    }
-  }, [user, navigate]);
+  // Redirect if already logged in
+  if (user) {
+    navigate("/dashboard");
+    return null;
+  }
 
   const handleInputChange = (field: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
