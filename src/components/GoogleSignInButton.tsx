@@ -1,6 +1,5 @@
 
 import { Button } from "@/components/ui/button";
-import { useGoogleAuth } from "@/hooks/useGoogleAuth";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -11,26 +10,17 @@ interface GoogleSignInButtonProps {
 export function GoogleSignInButton({ mode }: GoogleSignInButtonProps) {
   const { toast } = useToast();
 
-  const handleGoogleSuccess = async (tokenResponse: any) => {
+  const handleGoogleAuth = async () => {
     try {
-      // Get user info from Google using the access token
-      const userInfoResponse = await fetch('https://www.googleapis.com/oauth2/v2/userinfo', {
-        headers: {
-          Authorization: `Bearer ${tokenResponse.access_token}`,
-        },
-      });
-
-      const userInfo = await userInfoResponse.json();
-
-      // Use Supabase's built-in OAuth for Google
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
+          scopes: 'https://www.googleapis.com/auth/calendar.readonly email profile',
           queryParams: {
             access_type: 'offline',
             prompt: 'consent',
           },
-          redirectTo: `${window.location.origin}/`,
+          redirectTo: `${window.location.origin}/dashboard`,
         }
       });
 
@@ -51,14 +41,12 @@ export function GoogleSignInButton({ mode }: GoogleSignInButtonProps) {
     }
   };
 
-  const signInWithGoogle = useGoogleAuth(handleGoogleSuccess);
-
   return (
     <Button
       type="button"
       variant="outline"
-      onClick={signInWithGoogle}
-      className="w-main py-3 border-2 hover:bg-gray-50 transition-colors"
+      onClick={handleGoogleAuth}
+      className="w-full py-3 border-2 hover:bg-gray-50 transition-colors"
     >
       <svg className="w-5 h-5 mr-3" viewBox="0 0 24 24">
         <path
