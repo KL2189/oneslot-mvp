@@ -10,18 +10,17 @@ declare global {
   }
 }
 
-export function useGoogleAuth(onSuccess: (code: string) => void) {
+export function useGoogleAuth(onSuccess: (tokenResponse: any) => void) {
   const clientRef = useRef<any>(null);
 
   useEffect(() => {
     if (window.google && window.google.accounts && !clientRef.current) {
-      clientRef.current = window.google.accounts.oauth2.initCodeClient({
+      clientRef.current = window.google.accounts.oauth2.initTokenClient({
         client_id: GOOGLE_CLIENT_ID,
         scope: "openid email profile https://www.googleapis.com/auth/calendar.readonly",
-        ux_mode: "popup",
         callback: (response: any) => {
-          if (response.code) {
-            onSuccess(response.code);
+          if (response.access_token) {
+            onSuccess(response);
           }
         },
       });
@@ -30,7 +29,7 @@ export function useGoogleAuth(onSuccess: (code: string) => void) {
 
   const signIn = useCallback(() => {
     if (clientRef.current) {
-      clientRef.current.requestCode();
+      clientRef.current.requestAccessToken();
     } else {
       console.warn("Google OAuth client not initialized");
     }
