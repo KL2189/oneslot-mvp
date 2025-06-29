@@ -10,7 +10,7 @@ interface GoogleSignInButtonProps {
 export function GoogleSignInButton({ mode }: GoogleSignInButtonProps) {
   const { toast } = useToast();
 
-  const handleGoogleSignIn = async () => {
+  const handleGoogleAuth = async () => {
     try {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
@@ -45,7 +45,7 @@ export function GoogleSignInButton({ mode }: GoogleSignInButtonProps) {
     <Button
       type="button"
       variant="outline"
-      onClick={handleGoogleSignIn}
+      onClick={handleGoogleAuth}
       className="w-full py-3 border-2 hover:bg-gray-50 transition-colors"
     >
       <svg className="w-5 h-5 mr-3" viewBox="0 0 24 24">

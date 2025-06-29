@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -64,13 +65,12 @@ export default function CalendarConnections() {
             access_type: 'offline',
             prompt: 'consent',
           },
-          redirectTo: `${window.location.origin}/calendar-connections`,
+          redirectTo: `${window.location.origin}/calendar-connections?connected=google`,
         }
       });
 
       if (error) throw error;
 
-      // The OAuth flow will handle the redirect, so we don't need to do anything here
     } catch (error) {
       console.error('Error connecting Google Calendar:', error);
       toast({
@@ -81,6 +81,20 @@ export default function CalendarConnections() {
       setConnecting(null);
     }
   };
+
+  // Check for connection success on page load
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('connected') === 'google') {
+      toast({
+        title: "Success",
+        description: "Google Calendar connected successfully",
+      });
+      // Clean up URL
+      window.history.replaceState({}, document.title, window.location.pathname);
+      fetchConnectedAccounts();
+    }
+  }, []);
 
   const connectOutlookCalendar = async () => {
     toast({
