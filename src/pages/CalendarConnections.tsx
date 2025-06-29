@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -20,30 +19,12 @@ export default function CalendarConnections() {
   const { user } = useAuth();
   const [connectedAccounts, setConnectedAccounts] = useState<ConnectedAccount[]>([]);
   const [loading, setLoading] = useState(true);
-  const [connecting, setConnecting] = useState<string | null>(null);
 
   useEffect(() => {
     if (user) {
       fetchConnectedAccounts();
     }
   }, [user]);
-
-  useEffect(() => {
-    // Listen for OAuth success messages from popup
-    const handleMessage = (event: MessageEvent) => {
-      if (event.data?.type === 'OAUTH_SUCCESS') {
-        setConnecting(null);
-        toast({
-          title: "Success",
-          description: `${event.data.provider} Calendar connected successfully`,
-        });
-        fetchConnectedAccounts();
-      }
-    };
-
-    window.addEventListener('message', handleMessage);
-    return () => window.removeEventListener('message', handleMessage);
-  }, [toast]);
 
   const fetchConnectedAccounts = async () => {
     if (!user) return;
@@ -69,52 +50,10 @@ export default function CalendarConnections() {
   };
 
   const connectGoogleCalendar = async () => {
-    if (!user) return;
-    
-    setConnecting('google');
-    
-    try {
-      const { data, error } = await supabase.functions.invoke('oauth-google-start', {
-        body: { user_id: user.id }
-      });
-
-      if (error) throw error;
-
-      // Open popup for OAuth flow
-      const popup = window.open(
-        data.authUrl,
-        'google-oauth',
-        'width=500,height=600,scrollbars=yes,resizable=yes'
-      );
-
-      // Check if popup was blocked
-      if (!popup) {
-        toast({
-          title: "Popup Blocked",
-          description: "Please allow popups for this site to connect your calendar",
-          variant: "destructive",
-        });
-        setConnecting(null);
-        return;
-      }
-
-      // Check if popup is closed manually
-      const checkClosed = setInterval(() => {
-        if (popup.closed) {
-          clearInterval(checkClosed);
-          setConnecting(null);
-        }
-      }, 1000);
-
-    } catch (error) {
-      console.error('Error starting Google OAuth:', error);
-      toast({
-        title: "Error",
-        description: "Failed to connect Google Calendar",
-        variant: "destructive",
-      });
-      setConnecting(null);
-    }
+    toast({
+      title: "Coming Soon",
+      description: "Google Calendar integration is being set up",
+    });
   };
 
   const connectOutlookCalendar = async () => {
@@ -261,20 +200,10 @@ export default function CalendarConnections() {
               </p>
               <Button 
                 onClick={connectGoogleCalendar}
-                disabled={connecting === 'google'}
                 className="w-full bg-red-600 hover:bg-red-700"
               >
-                {connecting === 'google' ? (
-                  <>
-                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                    Connecting...
-                  </>
-                ) : (
-                  <>
-                    <Plus className="w-4 h-4 mr-2" />
-                    Connect Google Calendar
-                  </>
-                )}
+                <Plus className="w-4 h-4 mr-2" />
+                Connect Google Calendar
               </Button>
             </Card>
 

@@ -2,7 +2,6 @@
 import { Button } from "@/components/ui/button";
 import { useGoogleAuth } from "@/hooks/useGoogleAuth";
 import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/integrations/supabase/client";
 
 interface GoogleSignInButtonProps {
   mode: "signin" | "signup";
@@ -11,32 +10,32 @@ interface GoogleSignInButtonProps {
 export function GoogleSignInButton({ mode }: GoogleSignInButtonProps) {
   const { toast } = useToast();
 
-  const handleGoogleSuccess = async (code: string) => {
+  const handleGoogleSuccess = () => {
+    // Success will be handled by the auth state change listener
+    console.log('Google auth initiated successfully');
+  };
+
+  const signInWithGoogle = useGoogleAuth(handleGoogleSuccess);
+
+  const handleClick = async () => {
     try {
-      const { error } = await supabase.auth.exchangeCodeForSession(code);
-      if (error) {
-        toast({
-          title: "Authentication Failed",
-          description: error.message,
-          variant: "destructive",
-        });
-      }
+      console.log('Google sign-in button clicked');
+      await signInWithGoogle();
     } catch (error) {
+      console.error('Google authentication error:', error);
       toast({
-        title: "Error",
-        description: "Failed to authenticate with Google",
+        title: "Authentication Failed",
+        description: "Failed to authenticate with Google. Please try again.",
         variant: "destructive",
       });
     }
   };
 
-  const signInWithGoogle = useGoogleAuth(handleGoogleSuccess);
-
   return (
     <Button
       type="button"
       variant="outline"
-      onClick={signInWithGoogle}
+      onClick={handleClick}
       className="w-full py-3 border-2 hover:bg-gray-50 transition-colors"
     >
       <svg className="w-5 h-5 mr-3" viewBox="0 0 24 24">
