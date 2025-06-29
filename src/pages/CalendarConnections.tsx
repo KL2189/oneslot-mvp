@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -57,20 +56,27 @@ export default function CalendarConnections() {
     setConnecting('google');
     
     try {
+      // Use Supabase's built-in OAuth for Google
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          scopes: 'https://www.googleapis.com/auth/calendar.readonly email profile',
+          scopes: 'https://www.googleapis.com/auth/calendar.readonly',
           queryParams: {
             access_type: 'offline',
             prompt: 'consent',
           },
-          redirectTo: `${window.location.origin}/calendar-connections?connected=google`,
+          redirectTo: `${window.location.origin}/calendar-connections`,
         }
       });
 
       if (error) throw error;
 
+      toast({
+        title: "Success",
+        description: "Google Calendar connected successfully",
+      });
+
+      fetchConnectedAccounts();
     } catch (error) {
       console.error('Error connecting Google Calendar:', error);
       toast({
@@ -78,23 +84,10 @@ export default function CalendarConnections() {
         description: "Failed to connect Google Calendar",
         variant: "destructive",
       });
+    } finally {
       setConnecting(null);
     }
   };
-
-  // Check for connection success on page load
-  useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.get('connected') === 'google') {
-      toast({
-        title: "Success",
-        description: "Google Calendar connected successfully",
-      });
-      // Clean up URL
-      window.history.replaceState({}, document.title, window.location.pathname);
-      fetchConnectedAccounts();
-    }
-  }, []);
 
   const connectOutlookCalendar = async () => {
     toast({
