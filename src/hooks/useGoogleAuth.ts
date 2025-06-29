@@ -1,4 +1,3 @@
-
 import { useCallback, useEffect, useRef } from "react";
 
 // Updated Google OAuth client ID
