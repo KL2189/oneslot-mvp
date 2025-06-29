@@ -10,8 +10,6 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Dashboard from "./pages/Dashboard";
 import CalendarConnections from "./pages/CalendarConnections";
-import MeetingTypes from "./pages/MeetingTypes";
-import Analytics from "./pages/Analytics";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -34,16 +32,6 @@ const App = () => (
           <Route path="/calendar-connections" element={
             <ProtectedRoute>
               <CalendarConnections />
-            </ProtectedRoute>
-          } />
-          <Route path="/meeting-types" element={
-            <ProtectedRoute>
-              <MeetingTypes />
-            </ProtectedRoute>
-          } />
-          <Route path="/analytics" element={
-            <ProtectedRoute>
-              <Analytics />
             </ProtectedRoute>
           } />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

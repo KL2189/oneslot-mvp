@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Calendar, Users, Clock, TrendingUp, Plus, Settings, ExternalLink, LogOut } from "lucide-react";
@@ -104,10 +103,7 @@ export default function Dashboard() {
               <LogOut className="w-4 h-4 mr-2" />
               Sign Out
             </Button>
-            <Button 
-              className="btn-gradient"
-              onClick={() => navigate('/meeting-types')}
-            >
+            <Button className="btn-gradient">
               <Plus className="w-4 h-4 mr-2" />
               New Meeting Type
             </Button>
@@ -188,11 +184,7 @@ export default function Dashboard() {
             <div className="glass-card p-6 rounded-xl">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h3>
               <div className="space-y-3">
-                <Button 
-                  variant="outline" 
-                  className="w-full justify-start"
-                  onClick={() => navigate('/meeting-types')}
-                >
+                <Button variant="outline" className="w-full justify-start">
                   <Plus className="w-4 h-4 mr-3" />
                   New Meeting Type
                 </Button>
@@ -208,11 +200,7 @@ export default function Dashboard() {
                   <Calendar className="w-4 h-4 mr-3" />
                   Connect Calendar
                 </Button>
-                <Button 
-                  variant="outline" 
-                  className="w-full justify-start"
-                  onClick={() => navigate('/analytics')}
-                >
+                <Button variant="outline" className="w-full justify-start">
                   <TrendingUp className="w-4 h-4 mr-3" />
                   View Analytics
                 </Button>
