@@ -56,11 +56,10 @@ export default function CalendarConnections() {
     setConnecting('google');
     
     try {
-      // Use Supabase's built-in OAuth for Google
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          scopes: 'https://www.googleapis.com/auth/calendar.readonly',
+          scopes: 'https://www.googleapis.com/auth/calendar.readonly email profile',
           queryParams: {
             access_type: 'offline',
             prompt: 'consent',
@@ -71,12 +70,7 @@ export default function CalendarConnections() {
 
       if (error) throw error;
 
-      toast({
-        title: "Success",
-        description: "Google Calendar connected successfully",
-      });
-
-      fetchConnectedAccounts();
+      // The OAuth flow will handle the redirect, so we don't need to do anything here
     } catch (error) {
       console.error('Error connecting Google Calendar:', error);
       toast({
@@ -84,7 +78,6 @@ export default function CalendarConnections() {
         description: "Failed to connect Google Calendar",
         variant: "destructive",
       });
-    } finally {
       setConnecting(null);
     }
   };
