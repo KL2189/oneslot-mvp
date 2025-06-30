@@ -17,9 +17,10 @@ export function useAuth() {
   });
 
   useEffect(() => {
-    // Set up auth state listener
+    // Set up auth state listener first
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
+        console.log('Auth state changed:', event, session?.user?.email);
         setAuthState({
           user: session?.user ?? null,
           session,
@@ -28,8 +29,9 @@ export function useAuth() {
       }
     );
 
-    // Get initial session
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    // Then get initial session
+    supabase.auth.getSession().then(({ data: { session }, error }) => {
+      console.log('Initial session:', session?.user?.email, error);
       setAuthState({
         user: session?.user ?? null,
         session,
@@ -41,7 +43,7 @@ export function useAuth() {
   }, []);
 
   const signUp = async (email: string, password: string, fullName?: string) => {
-    const redirectUrl = `${window.location.origin}/`;
+    const redirectUrl = `${window.location.origin}/dashboard`;
     
     const { data, error } = await supabase.auth.signUp({
       email,
