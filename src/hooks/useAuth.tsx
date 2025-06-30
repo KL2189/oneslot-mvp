@@ -17,29 +17,48 @@ export function useAuth() {
   });
 
   useEffect(() => {
+    let mounted = true;
+
     // Set up auth state listener first
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
         console.log('Auth state changed:', event, session?.user?.email);
-        setAuthState({
-          user: session?.user ?? null,
-          session,
-          loading: false,
-        });
+        if (mounted) {
+          setAuthState({
+            user: session?.user ?? null,
+            session,
+            loading: false,
+          });
+        }
       }
     );
 
     // Then get initial session
-    supabase.auth.getSession().then(({ data: { session }, error }) => {
-      console.log('Initial session:', session?.user?.email, error);
-      setAuthState({
-        user: session?.user ?? null,
-        session,
-        loading: false,
-      });
-    });
+    const getInitialSession = async () => {
+      try {
+        const { data: { session }, error } = await supabase.auth.getSession();
+        console.log('Initial session:', session?.user?.email, error);
+        if (mounted) {
+          setAuthState({
+            user: session?.user ?? null,
+            session,
+            loading: false,
+          });
+        }
+      } catch (error) {
+        console.error('Error getting initial session:', error);
+        if (mounted) {
+          setAuthState(prev => ({ ...prev, loading: false }));
+        }
+      }
+    };
 
-    return () => subscription.unsubscribe();
+    getInitialSession();
+
+    return () => {
+      mounted = false;
+      subscription.unsubscribe();
+    };
   }, []);
 
   const signUp = async (email: string, password: string, fullName?: string) => {
