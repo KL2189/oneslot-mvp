@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Calendar, Users, Clock, TrendingUp, Plus, Settings, ExternalLink, LogOut } from "lucide-react";
@@ -196,7 +195,18 @@ export default function Dashboard() {
                   <Plus className="w-4 h-4 mr-3" />
                   New Meeting Type
                 </Button>
-                <Button variant="outline" className="w-full justify-start">
+                <Button 
+                  variant="outline" 
+                  className="w-full justify-start"
+                  onClick={() => {
+                    const bookingLink = `${window.location.origin}/book/${user?.id || 'demo'}`;
+                    navigator.clipboard.writeText(bookingLink);
+                    toast({
+                      title: "Link copied!",
+                      description: "Your OneSlot booking link has been copied to clipboard.",
+                    });
+                  }}
+                >
                   <ExternalLink className="w-4 h-4 mr-3" />
                   Share Your OneSlot
                 </Button>
