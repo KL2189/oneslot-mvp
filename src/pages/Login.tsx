@@ -24,16 +24,7 @@ export default function Login() {
     navigate("/dashboard");
     return null;
   }
-const googleSignIn = useGoogleAuth((code, codeVerifier) => {
-  setIsLoading(true);
-  // TODO: Send both code and codeVerifier to your backend
-  console.log("Auth code:", code);
-  console.log("Code verifier:", codeVerifier);
-  setTimeout(() => {
-    setIsLoading(false);
-    navigate("/dashboard");
-  }, 1000);
-});
+
   const handleInputChange = (field: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setFormData(prev => ({ ...prev, [field]: value }));
