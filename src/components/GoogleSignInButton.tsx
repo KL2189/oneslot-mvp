@@ -11,17 +11,28 @@ interface GoogleSignInButtonProps {
 export function GoogleSignInButton({ mode }: GoogleSignInButtonProps) {
   const { toast } = useToast();
 
-  const handleGoogleSuccess = async (code: string) => {
+  const handleGoogleSuccess = async (code: string, codeVerifier: string) => {
     try {
-      const { error } = await supabase.auth.exchangeCodeForSession(code);
+      console.log("Exchanging code for session with verifier:", { code: code.substring(0, 20) + "...", codeVerifier: codeVerifier.substring(0, 10) + "..." });
+      
+      const { data, error } = await supabase.auth.exchangeCodeForSession(code);
+      
       if (error) {
+        console.error("Exchange code error:", error);
         toast({
           title: "Authentication Failed",
           description: error.message,
           variant: "destructive",
         });
+      } else {
+        console.log("Successfully exchanged code for session");
+        toast({
+          title: "Success",
+          description: "Successfully signed in with Google",
+        });
       }
     } catch (error) {
+      console.error("Exchange code exception:", error);
       toast({
         title: "Error",
         description: "Failed to authenticate with Google",
