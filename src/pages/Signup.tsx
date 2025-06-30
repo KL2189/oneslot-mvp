@@ -1,6 +1,6 @@
 import { useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
-import { useGoogleAuth } from "@/hooks/useGoogleAuth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -20,16 +20,35 @@ export default function Signup() {
   const { toast } = useToast();
   const { signUp, user } = useAuth();
   
-  const googleSignIn = useGoogleAuth((code, codeVerifier) => {
-    setIsLoading(true);
-    // TODO: Send both code and codeVerifier to your backend
-    console.log("Auth code:", code);
-    console.log("Code verifier:", codeVerifier);
-    setTimeout(() => {
+  const handleGoogleSignIn = async () => {
+    try {
+      setIsLoading(true);
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: `${window.location.origin}/dashboard`,
+        },
+      });
+
+      if (error) {
+        console.error("Google sign-in error:", error);
+        toast({
+          title: "Authentication Failed",
+          description: error.message,
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      console.error("Unexpected error:", error);
+      toast({
+        title: "Error",
+        description: "Failed to sign in with Google",
+        variant: "destructive",
+      });
+    } finally {
       setIsLoading(false);
-      navigate("/dashboard");
-    }, 1000);
-  });
+    }
+  };
 
   // Redirect if already logged in
   if (user) {
@@ -179,7 +198,7 @@ export default function Signup() {
             <Button 
               variant="outline" 
               className="w-full py-3 border-2 hover:bg-gray-50"
-              onClick={googleSignIn}
+              onClick={handleGoogleSignIn}
               disabled={isLoading}
             >
               <svg className="w-5 h-5 mr-3" viewBox="0 0 24 24">
