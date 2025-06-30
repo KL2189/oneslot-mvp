@@ -1,3 +1,4 @@
+
 import { useCallback, useEffect, useRef } from "react";
 
 // Updated Google OAuth client ID
@@ -43,22 +44,38 @@ export function useGoogleAuth(onSuccess: (code: string, codeVerifier: string) =>
           const codeChallenge = await generateCodeChallenge(codeVerifier);
           codeVerifierRef.current = codeVerifier;
 
+          console.log("Initializing Google OAuth with PKCE:", {
+            codeVerifier: codeVerifier.substring(0, 10) + "...",
+            codeChallenge: codeChallenge.substring(0, 10) + "..."
+          });
+
           clientRef.current = window.google.accounts.oauth2.initCodeClient({
             client_id: GOOGLE_CLIENT_ID,
-            scope: "openid email profile https://www.googleapis.com/auth/calendar.readonly",
+            scope: "openid email profile",
             ux_mode: "popup",
             code_challenge_method: "S256",
             code_challenge: codeChallenge,
             callback: (response: any) => {
-              console.log("OAuth response:", response);
-              if (response.code) {
+              console.log("OAuth response received:", {
+                hasCode: !!response.code,
+                hasError: !!response.error,
+                codeVerifier: codeVerifierRef.current.substring(0, 10) + "..."
+              });
+              
+              if (response.code && codeVerifierRef.current) {
+                console.log("Calling onSuccess with code and verifier");
                 onSuccess(response.code, codeVerifierRef.current);
               } else if (response.error) {
                 console.error("OAuth error:", response.error);
+              } else {
+                console.error("Missing code or code verifier:", {
+                  hasCode: !!response.code,
+                  hasVerifier: !!codeVerifierRef.current
+                });
               }
             },
           });
-          console.log("Google OAuth client initialized with PKCE");
+          console.log("Google OAuth client initialized successfully");
         } catch (error) {
           console.error("Failed to initialize Google OAuth:", error);
         }
@@ -69,9 +86,10 @@ export function useGoogleAuth(onSuccess: (code: string, codeVerifier: string) =>
   }, [onSuccess]);
 
   const signIn = useCallback(() => {
-    console.log("Sign in clicked, client:", clientRef.current);
+    console.log("Sign in clicked, client ready:", !!clientRef.current);
     if (clientRef.current) {
       try {
+        console.log("Requesting authorization code...");
         clientRef.current.requestCode();
       } catch (error) {
         console.error("Failed to request code:", error);

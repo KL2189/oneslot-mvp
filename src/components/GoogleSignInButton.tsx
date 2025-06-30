@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { useGoogleAuth } from "@/hooks/useGoogleAuth";
 import { useToast } from "@/hooks/use-toast";
@@ -13,19 +12,34 @@ export function GoogleSignInButton({ mode }: GoogleSignInButtonProps) {
 
   const handleGoogleSuccess = async (code: string, codeVerifier: string) => {
     try {
-      console.log("Exchanging code for session with verifier:", { code: code.substring(0, 20) + "...", codeVerifier: codeVerifier.substring(0, 10) + "..." });
+      console.log("Starting token exchange:", { 
+        hasCode: !!code, 
+        hasVerifier: !!codeVerifier,
+        codeLength: code?.length,
+        verifierLength: codeVerifier?.length
+      });
+      
+      if (!code || !codeVerifier) {
+        console.error("Missing required parameters:", { code: !!code, codeVerifier: !!codeVerifier });
+        toast({
+          title: "Authentication Failed",
+          description: "Missing authentication parameters",
+          variant: "destructive",
+        });
+        return;
+      }
       
       const { data, error } = await supabase.auth.exchangeCodeForSession(code);
       
       if (error) {
-        console.error("Exchange code error:", error);
+        console.error("Supabase exchange error:", error);
         toast({
           title: "Authentication Failed",
           description: error.message,
           variant: "destructive",
         });
       } else {
-        console.log("Successfully exchanged code for session");
+        console.log("Authentication successful:", { user: data.user?.email });
         toast({
           title: "Success",
           description: "Successfully signed in with Google",
