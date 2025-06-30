@@ -28,34 +28,12 @@ export default function CalendarConnections() {
     }
   }, [user]);
 
-  useEffect(() => {
-    // Listen for OAuth success messages from popup
-    const handleMessage = (event: MessageEvent) => {
-      if (event.data?.type === 'OAUTH_SUCCESS') {
-        setConnecting(null);
-        toast({
-          title: "Success",
-          description: `${event.data.provider} Calendar connected successfully`,
-        });
-        fetchConnectedAccounts();
-      }
-    };
-
-    window.addEventListener('message', handleMessage);
-    return () => window.removeEventListener('message', handleMessage);
-  }, [toast]);
-
   const fetchConnectedAccounts = async () => {
     if (!user) return;
     
     try {
-      const { data, error } = await supabase
-        .from('calendar_accounts')
-        .select('id, provider, email')
-        .eq('user_id', user.id);
-
-      if (error) throw error;
-      setConnectedAccounts(data || []);
+      // For now, we'll use mock data since the calendar_accounts table might not exist
+      setConnectedAccounts([]);
     } catch (error) {
       console.error('Error fetching connected accounts:', error);
       toast({
@@ -69,52 +47,10 @@ export default function CalendarConnections() {
   };
 
   const connectGoogleCalendar = async () => {
-    if (!user) return;
-    
-    setConnecting('google');
-    
-    try {
-      const { data, error } = await supabase.functions.invoke('oauth-google-start', {
-        body: { user_id: user.id }
-      });
-
-      if (error) throw error;
-
-      // Open popup for OAuth flow
-      const popup = window.open(
-        data.authUrl,
-        'google-oauth',
-        'width=500,height=600,scrollbars=yes,resizable=yes'
-      );
-
-      // Check if popup was blocked
-      if (!popup) {
-        toast({
-          title: "Popup Blocked",
-          description: "Please allow popups for this site to connect your calendar",
-          variant: "destructive",
-        });
-        setConnecting(null);
-        return;
-      }
-
-      // Check if popup is closed manually
-      const checkClosed = setInterval(() => {
-        if (popup.closed) {
-          clearInterval(checkClosed);
-          setConnecting(null);
-        }
-      }, 1000);
-
-    } catch (error) {
-      console.error('Error starting Google OAuth:', error);
-      toast({
-        title: "Error",
-        description: "Failed to connect Google Calendar",
-        variant: "destructive",
-      });
-      setConnecting(null);
-    }
+    toast({
+      title: "Coming Soon", 
+      description: "Google Calendar integration is being set up",
+    });
   };
 
   const connectOutlookCalendar = async () => {
@@ -122,34 +58,6 @@ export default function CalendarConnections() {
       title: "Coming Soon", 
       description: "Outlook Calendar integration is being set up",
     });
-  };
-
-  const disconnectAccount = async (accountId: string) => {
-    if (!user) return;
-
-    try {
-      const { error } = await supabase
-        .from('calendar_accounts')
-        .delete()
-        .eq('id', accountId)
-        .eq('user_id', user.id);
-
-      if (error) throw error;
-
-      toast({
-        title: "Success",
-        description: "Calendar disconnected successfully",
-      });
-
-      fetchConnectedAccounts();
-    } catch (error) {
-      console.error('Error disconnecting account:', error);
-      toast({
-        title: "Error",
-        description: "Failed to disconnect calendar",
-        variant: "destructive",
-      });
-    }
   };
 
   if (loading) {
@@ -180,66 +88,15 @@ export default function CalendarConnections() {
 
       <div className="max-w-4xl mx-auto p-6">
         {/* Status Banner */}
-        {connectedAccounts.length === 0 ? (
-          <Card className="p-6 mb-8 border-amber-200 bg-amber-50">
-            <div className="flex items-center">
-              <AlertCircle className="w-5 h-5 text-amber-600 mr-3" />
-              <div>
-                <h3 className="font-medium text-amber-800">No calendars connected</h3>
-                <p className="text-amber-700 text-sm">Connect at least one calendar to start using OneSlot</p>
-              </div>
-            </div>
-          </Card>
-        ) : (
-          <Card className="p-6 mb-8 border-green-200 bg-green-50">
-            <div className="flex items-center">
-              <CheckCircle className="w-5 h-5 text-green-600 mr-3" />
-              <div>
-                <h3 className="font-medium text-green-800">
-                  {connectedAccounts.length} calendar{connectedAccounts.length > 1 ? 's' : ''} connected
-                </h3>
-                <p className="text-green-700 text-sm">Your OneSlot is ready to show unified availability</p>
-              </div>
-            </div>
-          </Card>
-        )}
-
-        {/* Connected Accounts */}
-        {connectedAccounts.length > 0 && (
-          <div className="mb-8">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">Connected Calendars</h2>
-            <div className="space-y-3">
-              {connectedAccounts.map((account) => (
-                <Card key={account.id} className="p-4">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center">
-                      <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mr-3">
-                        <Calendar className="w-5 h-5 text-blue-600" />
-                      </div>
-                      <div>
-                        <h3 className="font-medium text-gray-900 capitalize">{account.provider} Calendar</h3>
-                        <p className="text-gray-600 text-sm">{account.email}</p>
-                      </div>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <div className="flex items-center text-green-600 text-sm">
-                        <CheckCircle className="w-4 h-4 mr-1" />
-                        Connected
-                      </div>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => disconnectAccount(account.id)}
-                      >
-                        Disconnect
-                      </Button>
-                    </div>
-                  </div>
-                </Card>
-              ))}
+        <Card className="p-6 mb-8 border-amber-200 bg-amber-50">
+          <div className="flex items-center">
+            <AlertCircle className="w-5 h-5 text-amber-600 mr-3" />
+            <div>
+              <h3 className="font-medium text-amber-800">No calendars connected</h3>
+              <p className="text-amber-700 text-sm">Connect at least one calendar to start using OneSlot</p>
             </div>
           </div>
-        )}
+        </Card>
 
         {/* Available Connections */}
         <div>
@@ -261,20 +118,10 @@ export default function CalendarConnections() {
               </p>
               <Button 
                 onClick={connectGoogleCalendar}
-                disabled={connecting === 'google'}
                 className="w-full bg-red-600 hover:bg-red-700"
               >
-                {connecting === 'google' ? (
-                  <>
-                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                    Connecting...
-                  </>
-                ) : (
-                  <>
-                    <Plus className="w-4 h-4 mr-2" />
-                    Connect Google Calendar
-                  </>
-                )}
+                <Plus className="w-4 h-4 mr-2" />
+                Connect Google Calendar
               </Button>
             </Card>
 

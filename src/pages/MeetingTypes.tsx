@@ -5,10 +5,9 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Plus, Edit, Trash2, Clock, Palette } from "lucide-react";
+import { Plus, Edit, Trash2, Clock } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 
 interface MeetingType {
@@ -24,7 +23,7 @@ export default function MeetingTypes() {
   const { toast } = useToast();
   const { user } = useAuth();
   const [meetingTypes, setMeetingTypes] = useState<MeetingType[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingType, setEditingType] = useState<MeetingType | null>(null);
   const [formData, setFormData] = useState({
@@ -32,36 +31,6 @@ export default function MeetingTypes() {
     duration: 30,
     color: "#667eea"
   });
-
-  useEffect(() => {
-    if (user) {
-      fetchMeetingTypes();
-    }
-  }, [user]);
-
-  const fetchMeetingTypes = async () => {
-    if (!user) return;
-    
-    try {
-      const { data, error } = await supabase
-        .from('meeting_types')
-        .select('*')
-        .eq('user_id', user.id)
-        .order('name');
-
-      if (error) throw error;
-      setMeetingTypes(data || []);
-    } catch (error) {
-      console.error('Error fetching meeting types:', error);
-      toast({
-        title: "Error",
-        description: "Failed to load meeting types",
-        variant: "destructive",
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const generateSlug = (name: string) => {
     return name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
@@ -72,57 +41,33 @@ export default function MeetingTypes() {
     if (!user) return;
 
     const slug = generateSlug(formData.name);
-    
-    try {
-      if (editingType) {
-        const { error } = await supabase
-          .from('meeting_types')
-          .update({
-            name: formData.name,
-            duration: formData.duration,
-            color: formData.color,
-            slug: slug
-          })
-          .eq('id', editingType.id)
-          .eq('user_id', user.id);
+    const newMeetingType: MeetingType = {
+      id: Date.now().toString(),
+      name: formData.name,
+      duration: formData.duration,
+      color: formData.color,
+      slug: slug
+    };
 
-        if (error) throw error;
-        
-        toast({
-          title: "Success",
-          description: "Meeting type updated successfully",
-        });
-      } else {
-        const { error } = await supabase
-          .from('meeting_types')
-          .insert({
-            name: formData.name,
-            duration: formData.duration,
-            color: formData.color,
-            slug: slug,
-            user_id: user.id
-          });
-
-        if (error) throw error;
-        
-        toast({
-          title: "Success",
-          description: "Meeting type created successfully",
-        });
-      }
-
-      setIsDialogOpen(false);
-      setEditingType(null);
-      setFormData({ name: "", duration: 30, color: "#667eea" });
-      fetchMeetingTypes();
-    } catch (error) {
-      console.error('Error saving meeting type:', error);
+    if (editingType) {
+      setMeetingTypes(prev => prev.map(mt => 
+        mt.id === editingType.id ? { ...newMeetingType, id: editingType.id } : mt
+      ));
       toast({
-        title: "Error",
-        description: "Failed to save meeting type",
-        variant: "destructive",
+        title: "Success",
+        description: "Meeting type updated successfully",
+      });
+    } else {
+      setMeetingTypes(prev => [...prev, newMeetingType]);
+      toast({
+        title: "Success",
+        description: "Meeting type created successfully",
       });
     }
+
+    setIsDialogOpen(false);
+    setEditingType(null);
+    setFormData({ name: "", duration: 30, color: "#667eea" });
   };
 
   const handleEdit = (meetingType: MeetingType) => {
@@ -135,41 +80,13 @@ export default function MeetingTypes() {
     setIsDialogOpen(true);
   };
 
-  const handleDelete = async (id: string) => {
-    if (!user) return;
-    
-    try {
-      const { error } = await supabase
-        .from('meeting_types')
-        .delete()
-        .eq('id', id)
-        .eq('user_id', user.id);
-
-      if (error) throw error;
-
-      toast({
-        title: "Success",
-        description: "Meeting type deleted successfully",
-      });
-      
-      fetchMeetingTypes();
-    } catch (error) {
-      console.error('Error deleting meeting type:', error);
-      toast({
-        title: "Error",
-        description: "Failed to delete meeting type",
-        variant: "destructive",
-      });
-    }
+  const handleDelete = (id: string) => {
+    setMeetingTypes(prev => prev.filter(mt => mt.id !== id));
+    toast({
+      title: "Success",
+      description: "Meeting type deleted successfully",
+    });
   };
-
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-gray-50">
