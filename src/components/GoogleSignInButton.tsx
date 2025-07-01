@@ -59,7 +59,6 @@ export function GoogleSignInButton({ mode }: GoogleSignInButtonProps) {
           message: error.message,
           status: error.status,
           name: error.name,
-          cause: error.cause,
           fullError: error
         });
         
