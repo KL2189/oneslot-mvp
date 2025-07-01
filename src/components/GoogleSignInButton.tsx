@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { useGoogleAuth } from "@/hooks/useGoogleAuth";
 import { useToast } from "@/hooks/use-toast";
@@ -11,16 +12,21 @@ export function GoogleSignInButton({ mode }: GoogleSignInButtonProps) {
   const { toast } = useToast();
 
   const handleGoogleSuccess = async (code: string, codeVerifier: string) => {
+    console.log("🔄 Token Exchange: Starting process", {
+      timestamp: new Date().toISOString(),
+      hasCode: !!code,
+      hasVerifier: !!codeVerifier,
+      codeLength: code?.length,
+      verifierLength: codeVerifier?.length
+    });
+
     try {
-      console.log("Starting token exchange:", { 
-        hasCode: !!code, 
-        hasVerifier: !!codeVerifier,
-        codeLength: code?.length,
-        verifierLength: codeVerifier?.length
-      });
-      
+      // Phase 1: Parameter Validation
       if (!code || !codeVerifier) {
-        console.error("Missing required parameters:", { code: !!code, codeVerifier: !!codeVerifier });
+        console.error("❌ Token Exchange: Missing required parameters", { 
+          code: !!code, 
+          codeVerifier: !!codeVerifier 
+        });
         toast({
           title: "Authentication Failed",
           description: "Missing authentication parameters",
@@ -28,25 +34,60 @@ export function GoogleSignInButton({ mode }: GoogleSignInButtonProps) {
         });
         return;
       }
-      
+
+      // Phase 2: Supabase Exchange Attempt
+      console.log("🔄 Token Exchange: Calling Supabase exchangeCodeForSession", {
+        method: "exchangeCodeForSession",
+        providingCodeVerifier: false,
+        note: "Supabase handles PKCE internally"
+      });
+
       const { data, error } = await supabase.auth.exchangeCodeForSession(code);
       
+      // Phase 3: Response Analysis
+      console.log("📊 Token Exchange: Supabase response received", {
+        hasData: !!data,
+        hasError: !!error,
+        hasUser: !!data?.user,
+        hasSession: !!data?.session,
+        errorMessage: error?.message,
+        errorCode: error?.status
+      });
+
       if (error) {
-        console.error("Supabase exchange error:", error);
+        console.error("❌ Token Exchange: Supabase error details", {
+          message: error.message,
+          status: error.status,
+          name: error.name,
+          cause: error.cause,
+          fullError: error
+        });
+        
         toast({
           title: "Authentication Failed",
           description: error.message,
           variant: "destructive",
         });
       } else {
-        console.log("Authentication successful:", { user: data.user?.email });
+        console.log("✅ Token Exchange: Authentication successful", { 
+          userId: data.user?.id,
+          userEmail: data.user?.email,
+          sessionExists: !!data.session,
+          accessTokenExists: !!data.session?.access_token
+        });
+        
         toast({
           title: "Success",
           description: "Successfully signed in with Google",
         });
       }
     } catch (error) {
-      console.error("Exchange code exception:", error);
+      console.error("❌ Token Exchange: Unexpected error", {
+        error: error,
+        errorMessage: error instanceof Error ? error.message : 'Unknown error',
+        stack: error instanceof Error ? error.stack : 'No stack trace'
+      });
+      
       toast({
         title: "Error",
         description: "Failed to authenticate with Google",
