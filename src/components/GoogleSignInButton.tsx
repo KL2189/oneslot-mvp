@@ -1,8 +1,8 @@
 
 import { Button } from "@/components/ui/button";
-import { useGoogleAuth } from "@/hooks/useGoogleAuth";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { useState } from "react";
 
 interface GoogleSignInButtonProps {
   mode: "signin" | "signup";
@@ -10,52 +10,50 @@ interface GoogleSignInButtonProps {
 
 export function GoogleSignInButton({ mode }: GoogleSignInButtonProps) {
   const { toast } = useToast();
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleGoogleSuccess = async (code: string, codeVerifier: string) => {
-    console.log("🔄 Token Exchange: Starting process", {
-      timestamp: new Date().toISOString(),
-      hasCode: !!code,
-      hasVerifier: !!codeVerifier,
-      codeLength: code?.length,
-      verifierLength: codeVerifier?.length
-    });
-
+  const handleGoogleSignIn = async () => {
+    console.log('🚀 OAuth Flow: Starting Supabase native OAuth');
+    setIsLoading(true);
+    
     try {
-      // Phase 1: Parameter Validation
-      if (!code || !codeVerifier) {
-        console.error("❌ Token Exchange: Missing required parameters", { 
-          code: !!code, 
-          codeVerifier: !!codeVerifier 
-        });
-        toast({
-          title: "Authentication Failed",
-          description: "Missing authentication parameters",
-          variant: "destructive",
-        });
-        return;
-      }
-
-      // Phase 2: Supabase Exchange Attempt
-      console.log("🔄 Token Exchange: Calling Supabase exchangeCodeForSession", {
-        method: "exchangeCodeForSession",
-        providingCodeVerifier: false,
-        note: "Supabase handles PKCE internally"
+      // Phase 1: Configuration Check
+      console.log('🔧 OAuth Config: Checking Supabase client', {
+        clientInitialized: !!supabase,
+        timestamp: new Date().toISOString()
       });
 
-      const { data, error } = await supabase.auth.exchangeCodeForSession(code);
-      
+      // Phase 2: OAuth Flow Initiation
+      const redirectTo = `${window.location.origin}/dashboard`;
+      console.log('🔄 OAuth Flow: Initiating signInWithOAuth', {
+        provider: 'google',
+        redirectTo,
+        currentUrl: window.location.href
+      });
+
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo,
+          queryParams: {
+            access_type: 'offline',
+            prompt: 'consent',
+          },
+          scopes: 'email profile'
+        }
+      });
+
       // Phase 3: Response Analysis
-      console.log("📊 Token Exchange: Supabase response received", {
+      console.log('📊 OAuth Response: Supabase signInWithOAuth result', {
         hasData: !!data,
         hasError: !!error,
-        hasUser: !!data?.user,
-        hasSession: !!data?.session,
+        dataProperties: data ? Object.keys(data) : [],
         errorMessage: error?.message,
-        errorCode: error?.status
+        errorStatus: error?.status
       });
 
       if (error) {
-        console.error("❌ Token Exchange: Supabase error details", {
+        console.error('❌ OAuth Error: Supabase signInWithOAuth failed', {
           message: error.message,
           status: error.status,
           name: error.name,
@@ -67,21 +65,18 @@ export function GoogleSignInButton({ mode }: GoogleSignInButtonProps) {
           description: error.message,
           variant: "destructive",
         });
+        setIsLoading(false);
       } else {
-        console.log("✅ Token Exchange: Authentication successful", { 
-          userId: data.user?.id,
-          userEmail: data.user?.email,
-          sessionExists: !!data.session,
-          accessTokenExists: !!data.session?.access_token
+        console.log('✅ OAuth Success: Redirect initiated', {
+          url: data.url,
+          provider: data.provider
         });
         
-        toast({
-          title: "Success",
-          description: "Successfully signed in with Google",
-        });
+        // Note: We don't set loading to false here because we're redirecting
+        // The page will change, so the component will unmount
       }
     } catch (error) {
-      console.error("❌ Token Exchange: Unexpected error", {
+      console.error('❌ OAuth Exception: Unexpected error in OAuth flow', {
         error: error,
         errorMessage: error instanceof Error ? error.message : 'Unknown error',
         stack: error instanceof Error ? error.stack : 'No stack trace'
@@ -89,19 +84,19 @@ export function GoogleSignInButton({ mode }: GoogleSignInButtonProps) {
       
       toast({
         title: "Error",
-        description: "Failed to authenticate with Google",
+        description: "Failed to initiate Google authentication",
         variant: "destructive",
       });
+      setIsLoading(false);
     }
   };
-
-  const signInWithGoogle = useGoogleAuth(handleGoogleSuccess);
 
   return (
     <Button
       type="button"
       variant="outline"
-      onClick={signInWithGoogle}
+      onClick={handleGoogleSignIn}
+      disabled={isLoading}
       className="w-full py-3 border-2 hover:bg-gray-50 transition-colors"
     >
       <svg className="w-5 h-5 mr-3" viewBox="0 0 24 24">
@@ -122,7 +117,7 @@ export function GoogleSignInButton({ mode }: GoogleSignInButtonProps) {
           d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
         />
       </svg>
-      {mode === "signin" ? "Sign in with Google" : "Sign up with Google"}
+      {isLoading ? "Redirecting..." : mode === "signin" ? "Sign in with Google" : "Sign up with Google"}
     </Button>
   );
 }

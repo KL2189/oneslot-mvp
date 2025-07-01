@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { GoogleSignInButton } from "@/components/GoogleSignInButton";
+import { OAuthDiagnostics } from "@/components/OAuthDiagnostics";
 import { Mail, Lock, ArrowLeft, CheckCircle } from "lucide-react";
 import { useNavigate, Link } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
@@ -126,6 +127,9 @@ export default function Login() {
             </p>
           </div>
 
+          {/* OAuth Diagnostics (temporary for debugging) */}
+          <OAuthDiagnostics />
+          
           {/* Google Sign In */}
           <div className="mb-6">
             <GoogleSignInButton mode="signin" />
