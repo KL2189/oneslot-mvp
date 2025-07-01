@@ -28,7 +28,8 @@ export function GoogleSignInButton({ mode }: GoogleSignInButtonProps) {
       console.log('🔄 OAuth Flow: Initiating signInWithOAuth', {
         provider: 'google',
         redirectTo,
-        currentUrl: window.location.href
+        currentUrl: window.location.href,
+        windowOrigin: window.location.origin
       });
 
       const { data, error } = await supabase.auth.signInWithOAuth({
