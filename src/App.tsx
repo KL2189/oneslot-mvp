@@ -12,6 +12,7 @@ import Dashboard from "./pages/Dashboard";
 import CalendarConnections from "./pages/CalendarConnections";
 import MeetingTypes from "./pages/MeetingTypes";
 import Analytics from "./pages/Analytics";
+import AuthCallback from "./pages/AuthCallback";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -26,6 +27,7 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/auth/callback" element={<AuthCallback />} />
           <Route path="/dashboard" element={
             <ProtectedRoute>
               <Dashboard />

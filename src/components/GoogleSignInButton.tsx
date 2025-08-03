@@ -1,3 +1,4 @@
+// src/components/GoogleSignInButton.tsx
 
 import { Button } from "@/components/ui/button";
 import { useGoogleAuth } from "@/hooks/useGoogleAuth";
@@ -9,11 +10,16 @@ interface GoogleSignInButtonProps {
 }
 
 export function GoogleSignInButton({ mode }: GoogleSignInButtonProps) {
+  // Initialize toast
   const { toast } = useToast();
 
-  const handleGoogleSuccess = async (code: string) => {
+  // Hook into Google OAuth with ID token flow
+  const signInWithGoogle = useGoogleAuth(async (credentialResponse: any) => {
     try {
-      const { error } = await supabase.auth.exchangeCodeForSession(code);
+      const { error } = await supabase.auth.signInWithIdToken({
+        provider: 'google',
+        token: credentialResponse.credential,
+      });
       if (error) {
         toast({
           title: "Authentication Failed",
@@ -21,16 +27,14 @@ export function GoogleSignInButton({ mode }: GoogleSignInButtonProps) {
           variant: "destructive",
         });
       }
-    } catch (error) {
+    } catch (err) {
       toast({
         title: "Error",
         description: "Failed to authenticate with Google",
         variant: "destructive",
       });
     }
-  };
-
-  const signInWithGoogle = useGoogleAuth(handleGoogleSuccess);
+  });
 
   return (
     <Button
