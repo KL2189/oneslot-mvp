@@ -1,9 +1,9 @@
 // src/components/GoogleSignInButton.tsx
 
 import { Button } from "@/components/ui/button";
-import { useGoogleAuth } from "@/hooks/useGoogleAuth";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { useState } from "react";
 
 interface GoogleSignInButtonProps {
   mode: "signin" | "signup";
@@ -12,35 +12,94 @@ interface GoogleSignInButtonProps {
 export function GoogleSignInButton({ mode }: GoogleSignInButtonProps) {
   // Initialize toast
   const { toast } = useToast();
+  const [isLoading, setIsLoading] = useState(false);
 
-  // Hook into Google OAuth with ID token flow
-  const signInWithGoogle = useGoogleAuth(async (credentialResponse: any) => {
+  const handleGoogleSignIn = async () => {
+    console.log('🚀 OAuth Flow: Starting Supabase native OAuth');
+    setIsLoading(true);
+    
     try {
-      const { error } = await supabase.auth.signInWithIdToken({
-        provider: 'google',
-        token: credentialResponse.credential,
+      // Phase 1: Configuration Check
+      console.log('🔧 OAuth Config: Checking Supabase client', {
+        clientInitialized: !!supabase,
+        timestamp: new Date().toISOString()
       });
+
+      // Phase 2: OAuth Flow Initiation
+      const redirectTo = `${window.location.origin}/dashboard`;
+      console.log('🔄 OAuth Flow: Initiating signInWithOAuth', {
+        provider: 'google',
+        redirectTo,
+        currentUrl: window.location.href,
+        windowOrigin: window.location.origin
+      });
+
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo,
+          queryParams: {
+            access_type: 'offline',
+            prompt: 'consent',
+          },
+          scopes: 'email profile'
+        }
+      });
+
+      // Phase 3: Response Analysis
+      console.log('📊 OAuth Response: Supabase signInWithOAuth result', {
+        hasData: !!data,
+        hasError: !!error,
+        dataProperties: data ? Object.keys(data) : [],
+        errorMessage: error?.message,
+        errorStatus: error?.status
+      });
+
       if (error) {
+        console.error('❌ OAuth Error: Supabase signInWithOAuth failed', {
+          message: error.message,
+          status: error.status,
+          name: error.name,
+          fullError: error
+        });
+        
         toast({
           title: "Authentication Failed",
           description: error.message,
           variant: "destructive",
         });
+        setIsLoading(false);
+      } else {
+        console.log('✅ OAuth Success: Redirect initiated', {
+          url: data.url,
+          provider: data.provider
+        });
+        
+        // Note: We don't set loading to false here because we're redirecting
+        // The page will change, so the component will unmount
       }
-    } catch (err) {
+    } catch (error) {
+      console.error('❌ OAuth Exception: Unexpected error in OAuth flow', {
+        error: error,
+        errorMessage: error instanceof Error ? error.message : 'Unknown error',
+        stack: error instanceof Error ? error.stack : 'No stack trace'
+      });
+      
       toast({
         title: "Error",
-        description: "Failed to authenticate with Google",
+        description: "Failed to initiate Google authentication",
         variant: "destructive",
       });
+      setIsLoading(false);
     }
-  });
+  };
 
   return (
     <Button
       type="button"
       variant="outline"
-      onClick={signInWithGoogle}
+      onClick={handleGoogleSignIn}
+      disabled={isLoading}
       className="w-full py-3 border-2 hover:bg-gray-50 transition-colors"
     >
       <svg className="w-5 h-5 mr-3" viewBox="0 0 24 24">
@@ -61,7 +120,7 @@ export function GoogleSignInButton({ mode }: GoogleSignInButtonProps) {
           d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
         />
       </svg>
-      {mode === "signin" ? "Sign in with Google" : "Sign up with Google"}
+      {isLoading ? "Redirecting..." : mode === "signin" ? "Sign in with Google" : "Sign up with Google"}
     </Button>
   );
 }
