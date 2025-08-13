@@ -29,7 +29,7 @@ serve(async (req) => {
     // Google OAuth configuration
     const clientId = Deno.env.get('GOOGLE_CLIENT_ID');
     const clientSecret = Deno.env.get('GOOGLE_CLIENT_SECRET');
-    const redirectUri = `${Deno.env.get('SUPABASE_URL')}/functions/v1/oauth-google-callback`;
+    const redirectUri = 'https://buteohtchnbywfkjwjhf.supabase.co/functions/v1/oauth-google-callback';
 
     if (!clientId || !clientSecret) {
       return new Response(
