@@ -36,7 +36,7 @@ serve(async (req) => {
         JSON.stringify({ error: 'Google OAuth not configured' }),
         { 
           status: 500, 
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
         }
       );
     }

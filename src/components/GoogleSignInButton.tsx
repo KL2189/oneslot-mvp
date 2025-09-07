@@ -26,7 +26,7 @@ export function GoogleSignInButton({ mode }: GoogleSignInButtonProps) {
       });
 
       // Phase 2: OAuth Flow Initiation
-      const redirectTo = `${window.location.origin}/dashboard`;
+      const redirectTo = `${window.location.origin}/auth/callback`;
       console.log('🔄 OAuth Flow: Initiating signInWithOAuth', {
         provider: 'google',
         redirectTo,
