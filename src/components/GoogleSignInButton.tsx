@@ -1,5 +1,3 @@
-// src/components/GoogleSignInButton.tsx
-
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
@@ -15,24 +13,10 @@ export function GoogleSignInButton({ mode }: GoogleSignInButtonProps) {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleGoogleSignIn = async () => {
-    console.log('🚀 OAuth Flow: Starting Supabase native OAuth');
     setIsLoading(true);
-    
-    try {
-      // Phase 1: Configuration Check
-      console.log('🔧 OAuth Config: Checking Supabase client', {
-        clientInitialized: !!supabase,
-        timestamp: new Date().toISOString()
-      });
 
-      // Phase 2: OAuth Flow Initiation
+    try {
       const redirectTo = `${window.location.origin}/auth/callback`;
-      console.log('🔄 OAuth Flow: Initiating signInWithOAuth', {
-        provider: 'google',
-        redirectTo,
-        currentUrl: window.location.href,
-        windowOrigin: window.location.origin
-      });
 
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
@@ -46,45 +30,16 @@ export function GoogleSignInButton({ mode }: GoogleSignInButtonProps) {
         }
       });
 
-      // Phase 3: Response Analysis
-      console.log('📊 OAuth Response: Supabase signInWithOAuth result', {
-        hasData: !!data,
-        hasError: !!error,
-        dataProperties: data ? Object.keys(data) : [],
-        errorMessage: error?.message,
-        errorStatus: error?.status
-      });
-
       if (error) {
-        console.error('❌ OAuth Error: Supabase signInWithOAuth failed', {
-          message: error.message,
-          status: error.status,
-          name: error.name,
-          fullError: error
-        });
-        
         toast({
           title: "Authentication Failed",
           description: error.message,
           variant: "destructive",
         });
         setIsLoading(false);
-      } else {
-        console.log('✅ OAuth Success: Redirect initiated', {
-          url: data.url,
-          provider: data.provider
-        });
-        
-        // Note: We don't set loading to false here because we're redirecting
-        // The page will change, so the component will unmount
       }
+      // Note: We don't set loading to false on success because we're redirecting
     } catch (error) {
-      console.error('❌ OAuth Exception: Unexpected error in OAuth flow', {
-        error: error,
-        errorMessage: error instanceof Error ? error.message : 'Unknown error',
-        stack: error instanceof Error ? error.stack : 'No stack trace'
-      });
-      
       toast({
         title: "Error",
         description: "Failed to initiate Google authentication",
