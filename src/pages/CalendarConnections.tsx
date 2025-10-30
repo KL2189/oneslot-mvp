@@ -30,10 +30,19 @@ export default function CalendarConnections() {
 
   const fetchConnectedAccounts = async () => {
     if (!user) return;
-    
+
     try {
-      // For now, we'll use mock data since the calendar_accounts table might not exist
-      setConnectedAccounts([]);
+      const { data, error } = await supabase
+        .from('calendar_accounts')
+        .select('*')
+        .eq('user_id', user.id);
+
+      if (error) {
+        console.error('Error fetching connected accounts:', error);
+        throw error;
+      }
+
+      setConnectedAccounts(data || []);
     } catch (error) {
       console.error('Error fetching connected accounts:', error);
       toast({
@@ -47,15 +56,91 @@ export default function CalendarConnections() {
   };
 
   const connectGoogleCalendar = async () => {
-    toast({
-      title: "Coming Soon", 
-      description: "Google Calendar integration is being set up",
-    });
+    if (!user) {
+      toast({
+        title: "Error",
+        description: "You must be logged in to connect calendars",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setConnecting('google');
+
+    try {
+      // Get the Supabase URL
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+
+      // Call the OAuth start function with user_id as query parameter
+      const response = await fetch(
+        `${supabaseUrl}/functions/v1/oauth-google-start?user_id=${user.id}`,
+        {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error('Failed to start OAuth flow');
+      }
+
+      const data = await response.json();
+
+      if (!data?.authUrl) {
+        throw new Error('No auth URL returned');
+      }
+
+      // Open OAuth popup
+      const popup = window.open(
+        data.authUrl,
+        'Google Calendar OAuth',
+        'width=600,height=700'
+      );
+
+      // Listen for OAuth success message
+      const handleMessage = (event: MessageEvent) => {
+        if (event.data?.type === 'OAUTH_SUCCESS' && event.data?.provider === 'google') {
+          window.removeEventListener('message', handleMessage);
+          popup?.close();
+
+          toast({
+            title: "Success",
+            description: "Google Calendar connected successfully",
+          });
+
+          // Refresh connected accounts
+          fetchConnectedAccounts();
+          setConnecting(null);
+        }
+      };
+
+      window.addEventListener('message', handleMessage);
+
+      // Check if popup was closed without completing OAuth
+      const checkPopupClosed = setInterval(() => {
+        if (popup?.closed) {
+          clearInterval(checkPopupClosed);
+          window.removeEventListener('message', handleMessage);
+          setConnecting(null);
+        }
+      }, 500);
+
+    } catch (error) {
+      console.error('Error connecting Google Calendar:', error);
+      toast({
+        title: "Error",
+        description: "Failed to connect Google Calendar",
+        variant: "destructive",
+      });
+      setConnecting(null);
+    }
   };
 
   const connectOutlookCalendar = async () => {
     toast({
-      title: "Coming Soon", 
+      title: "Coming Soon",
       description: "Outlook Calendar integration is being set up",
     });
   };
@@ -88,15 +173,58 @@ export default function CalendarConnections() {
 
       <div className="max-w-4xl mx-auto p-6">
         {/* Status Banner */}
-        <Card className="p-6 mb-8 border-amber-200 bg-amber-50">
-          <div className="flex items-center">
-            <AlertCircle className="w-5 h-5 text-amber-600 mr-3" />
-            <div>
-              <h3 className="font-medium text-amber-800">No calendars connected</h3>
-              <p className="text-amber-700 text-sm">Connect at least one calendar to start using OneSlot</p>
+        {connectedAccounts.length === 0 ? (
+          <Card className="p-6 mb-8 border-amber-200 bg-amber-50">
+            <div className="flex items-center">
+              <AlertCircle className="w-5 h-5 text-amber-600 mr-3" />
+              <div>
+                <h3 className="font-medium text-amber-800">No calendars connected</h3>
+                <p className="text-amber-700 text-sm">Connect at least one calendar to start using OneSlot</p>
+              </div>
+            </div>
+          </Card>
+        ) : (
+          <Card className="p-6 mb-8 border-green-200 bg-green-50">
+            <div className="flex items-center">
+              <CheckCircle className="w-5 h-5 text-green-600 mr-3" />
+              <div>
+                <h3 className="font-medium text-green-800">
+                  {connectedAccounts.length} calendar{connectedAccounts.length > 1 ? 's' : ''} connected
+                </h3>
+                <p className="text-green-700 text-sm">Your availability is now synced across all connected calendars</p>
+              </div>
+            </div>
+          </Card>
+        )}
+
+        {/* Connected Accounts */}
+        {connectedAccounts.length > 0 && (
+          <div className="mb-8">
+            <h2 className="text-lg font-semibold text-gray-900 mb-4">Connected Calendars</h2>
+            <div className="space-y-3">
+              {connectedAccounts.map((account) => (
+                <Card key={account.id} className="p-4">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center">
+                      <div className={`w-10 h-10 rounded-lg flex items-center justify-center mr-3 ${
+                        account.provider === 'google' ? 'bg-red-100' : 'bg-blue-100'
+                      }`}>
+                        <Calendar className={`w-5 h-5 ${
+                          account.provider === 'google' ? 'text-red-600' : 'text-blue-600'
+                        }`} />
+                      </div>
+                      <div>
+                        <h3 className="font-medium text-gray-900 capitalize">{account.provider} Calendar</h3>
+                        <p className="text-gray-600 text-sm">{account.email}</p>
+                      </div>
+                    </div>
+                    <CheckCircle className="w-5 h-5 text-green-600" />
+                  </div>
+                </Card>
+              ))}
             </div>
           </div>
-        </Card>
+        )}
 
         {/* Available Connections */}
         <div>
@@ -116,12 +244,22 @@ export default function CalendarConnections() {
               <p className="text-gray-600 text-sm mb-4">
                 Sync your Google Calendar events to show accurate availability in your OneSlot.
               </p>
-              <Button 
+              <Button
                 onClick={connectGoogleCalendar}
+                disabled={connecting === 'google'}
                 className="w-full bg-red-600 hover:bg-red-700"
               >
-                <Plus className="w-4 h-4 mr-2" />
-                Connect Google Calendar
+                {connecting === 'google' ? (
+                  <>
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                    Connecting...
+                  </>
+                ) : (
+                  <>
+                    <Plus className="w-4 h-4 mr-2" />
+                    Connect Google Calendar
+                  </>
+                )}
               </Button>
             </Card>
 
